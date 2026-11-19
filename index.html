@@ -1,0 +1,2153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}img{max-width:100%}</style>
+</head><body>
+<title>Around the World in 80 Sips</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=IM+Fell+English:ital@0;1&family=Mountains+of+Christmas:wght@700&display=swap">
+<style>
+[hidden] { display: none !important; }
+/* Layout: an old atlas up top with a pin per country, then a rack of vintage postcards below. */
+:root {
+  color-scheme: light;
+  --paper: #F3EBD8;
+  --paper-dark: #E6D9BB;
+  --ink: #0D2B2C;
+  --gold: #8A6A26;
+  --gold-soft: #B8954A;
+  --brown: #3B2E1E;
+  --display: 'Cinzel', 'Trajan Pro', Georgia, serif;
+  --body: 'IM Fell English', Georgia, 'Times New Roman', serif;
+}
+body {
+  background: var(--paper); color: var(--brown); font-family: var(--body); font-size: 19px; line-height: 1.4;
+  padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.page { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+header { text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+h1 { margin: 0; font-family: var(--display); font-weight: 800; color: var(--ink); font-size: clamp(30px, 6vw, 56px); line-height: 1.05; letter-spacing: 1px; text-wrap: balance; }
+.sub { margin: 0; font-style: italic; font-size: 21px; max-width: 46ch; text-wrap: balance; }
+.tally { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+button { font: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+/* The atlas */
+.atlas-scroll { overflow-x: auto; border: 1px solid var(--gold-soft); background: var(--paper); }
+.atlas { position: relative; min-width: 760px; overflow: hidden; }
+.atlas-layer { position: relative; transform-origin: 0 0; transition: transform .6s ease; }
+.atlas.zoomed .atlas-layer { transform: scale(3) translate(-35%, -18.333%); }
+.atlas.zoomed .pin { transform: scale(.42); transform-origin: 50% 100%; }
+.atlas.zoomed .pin:hover, .atlas.zoomed .pin:focus-visible { transform: scale(.42) translateY(-7px); }
+.zoom-btn {
+  position: absolute; left: 10px; top: 10px; z-index: 4; display: inline-flex; align-items: center; gap: 6px;
+  background: var(--paper); color: var(--ink); border: 1px solid var(--gold); padding: 6px 12px; min-height: 36px;
+  font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: 1px; box-shadow: 0 2px 6px rgba(0,0,0,.35);
+}
+.zoom-btn svg { width: 16px; height: 16px; flex: none; }
+.zoom-btn:hover { background: #FFF8E6; }
+.atlas-frame { position: relative; }
+@media (pointer: coarse) { .pin::after { content: ""; position: absolute; inset: -8px -7px -4px; } }
+@media (prefers-reduced-motion: reduce) { .atlas-layer { transition: none; } }
+.atlas img { display: block; width: 100%; height: auto; }
+.pin {
+  position: absolute; width: 17px; height: 23px; margin: -22px 0 0 -8.5px; padding: 0; border: 0; background: none;
+  transition: transform .15s ease;
+}
+.pin svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 2px rgba(0,0,0,.45)); }
+.pin .tip {
+  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); white-space: nowrap;
+  background: var(--ink); color: var(--paper); font-family: var(--display); font-size: 13px; letter-spacing: 1px;
+  padding: 4px 8px; pointer-events: none; opacity: 0; transition: opacity .15s;
+}
+.pin:hover, .pin:focus-visible { transform: translateY(-3px); z-index: 3; }
+.pin:hover .tip, .pin:focus-visible .tip { opacity: 1; }
+.atlas-note { margin: 6px 0 0; text-align: center; font-style: italic; font-size: 17px; }
+
+/* Filters */
+.tabs { display: flex; flex-wrap: wrap; gap: 0; justify-content: center; border-bottom: 1px solid var(--gold-soft); }
+.tab { color: var(--ink); text-decoration: none; font-family: var(--display); font-weight: 800; font-size: 17px; letter-spacing: 1px; padding: 12px 18px; min-height: 44px; box-sizing: border-box; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tab:hover { border-bottom-color: var(--gold-soft); }
+.tab[aria-current="true"] { border-bottom-color: var(--ink); }
+.tab:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.xmas { display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
+.xmas h2 { margin: 0; font-family: var(--display); font-weight: 800; color: #9B1C2E; font-size: clamp(26px, 5vw, 40px); }
+.xmas-sub { margin: 0; font-style: italic; }
+.xmas-status { margin: 0; min-height: 1.4em; color: #9B1C2E; }
+.doors { width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: 12px; }
+.door {
+  min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 10px;
+  background: #9B1C2E; color: #FBF6E8; border: 2px solid var(--gold-soft); outline: 1px dashed rgba(251,246,232,.55); outline-offset: -8px;
+}
+.door:nth-child(even) { background: #1F5A3A; }
+.door .num { font-family: var(--display); font-weight: 900; font-size: 44px; line-height: 1; }
+.door .what { font-size: 16px; line-height: 1.15; text-wrap: balance; }
+.door.locked { opacity: .78; }
+.door.open { background: #FBF6E8; color: var(--ink); outline-color: var(--gold-soft); }
+.door.open .num { color: var(--gold); }
+.mix { display: flex; flex-direction: column; gap: 18px; }
+.mix-head { text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.mix h2 { margin: 0; font-family: var(--display); font-weight: 800; color: var(--ink); font-size: clamp(26px, 5vw, 40px); }
+.columns { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 820px) { .columns { grid-template-columns: minmax(0, 1fr); } }
+.shelf { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.shelf-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.group { margin: 0; padding: 0; border: 0; min-width: 0; }
+.group legend { padding: 0 0 6px; font-family: var(--display); font-weight: 800; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+.ticks { display: flex; flex-wrap: wrap; gap: 6px; }
+.tick { position: relative; display: block; cursor: pointer; }
+.tick input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.tick span { display: flex; align-items: center; gap: 6px; min-height: 40px; box-sizing: border-box; padding: 4px 11px; border: 1px solid var(--gold-soft); background: #FBF6E8; color: var(--brown); font-size: 17px; }
+.tick span::before { content: ""; width: 12px; height: 12px; border: 1px solid var(--ink); flex: none; }
+.tick input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tick input:checked + span::before { background: #C9A23E; border-color: #C9A23E; }
+.tick input:focus-visible + span { outline: 3px solid var(--ink); outline-offset: 2px; }
+.results { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.results h3 { margin: 6px 0 0; font-family: var(--display); font-weight: 800; font-size: 24px; color: var(--ink); }
+.bar.left { justify-content: flex-start; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr)); gap: 10px; }
+.tile { background: #FBF6E8; color: var(--brown); border: 1px solid var(--gold-soft); padding: 12px 14px; min-height: 96px; display: flex; flex-direction: column; gap: 2px; text-align: left; }
+.tile:hover { border-color: var(--ink); }
+.ttype { font-family: var(--display); font-weight: 600; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+.ttitle { font-family: var(--display); font-weight: 800; font-size: 18px; line-height: 1.15; color: var(--ink); }
+.need { margin-top: auto; padding-top: 4px; color: #9B1C2E; }
+.none { margin: 0; font-style: italic; }
+.board { display: flex; flex-direction: column; gap: 18px; }
+.board h2, .insta h2 { margin: 0; font-family: var(--display); font-weight: 800; color: var(--ink); font-size: clamp(26px, 5vw, 40px); text-align: center; }
+.board-status { margin: 0; min-height: 1.4em; text-align: center; color: #9B1C2E; }
+.forms, .feeds { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 22px; align-items: start; }
+.panel { background: #FBF6E8; border: 1px solid var(--gold-soft); padding: 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.panel h3, .feeds h3 { margin: 0 0 4px; font-family: var(--display); font-weight: 800; font-size: 22px; color: var(--ink); }
+.panel label:not(.tick) { font-weight: 700; }
+.panel input[type="text"], .panel select, .panel textarea { font: inherit; font-size: 18px; color: var(--brown); background: #fff; border: 1px solid var(--gold-soft); padding: 8px 10px; min-height: 44px; box-sizing: border-box; width: 100%; }
+.panel textarea { resize: vertical; }
+.panel input:focus-visible, .panel select:focus-visible, .panel textarea:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
+.btn { align-self: flex-start; display: inline-flex; align-items: center; background: var(--ink); color: var(--paper); border: 0; padding: 10px 20px; min-height: 44px; font-family: var(--display); font-weight: 800; font-size: 16px; letter-spacing: 1px; text-decoration: none; margin-top: 6px; }
+.btn:hover { background: #1B4A4A; }
+.btn:focus-visible { outline: 3px solid #C9A23E; outline-offset: 3px; }
+.feed { display: flex; flex-direction: column; gap: 10px; }
+.entry { background: #FBF6E8; border: 1px solid var(--gold-soft); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.entry p { margin: 0; }
+.entry-head { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.entry-head strong { font-family: var(--display); font-size: 18px; color: var(--ink); }
+.stars-show { color: #A0761E; letter-spacing: 2px; }
+.badge { background: #2E6B44; color: #fff; font-size: 14px; padding: 1px 8px; }
+.meta { font-style: italic; font-size: 16px; color: #5A4A2E; }
+.entry-tools { display: flex; gap: 8px; margin-top: 4px; }
+.small-btn { min-height: 36px; padding: 4px 12px; font-size: 13px; }
+.insta { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding: 20px 0 10px; }
+.insta-icon { width: 64px; height: 64px; }
+.insta-body { max-width: 46ch; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.insta-body p { margin: 0; }
+.insta-body .btn { align-self: center; }
+.soon-big { font-family: var(--display); font-weight: 800; font-size: 28px; color: var(--gold); }
+
+/* Christmas tab: a snowy night, fairy lights and presents for doors. */
+body.xmas-mode {
+  --xm-night: #0F3324; --xm-red: #B3202F; --xm-green: #1E6B45; --xm-gold: #E2B64A; --xm-cream: #FFF7E6;
+  background-color: var(--xm-night);
+  background-image: radial-gradient(circle at 20% 10%, rgba(255,255,255,.06), transparent 40%), radial-gradient(circle at 80% 30%, rgba(226,182,74,.08), transparent 45%);
+  color: var(--xm-cream);
+}
+body.xmas-mode::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.9) 1.6px, transparent 2.2px),
+    radial-gradient(circle, rgba(255,255,255,.65) 1.1px, transparent 1.6px),
+    radial-gradient(circle, rgba(255,255,255,.45) 2.4px, transparent 3px);
+  background-size: 140px 140px, 90px 110px, 230px 210px;
+  background-position: 0 0, 40px 60px, 120px 30px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  body.xmas-mode::before { animation: snowfall 14s linear infinite; }
+  @keyframes snowfall { to { background-position: 30px 140px, 0px 170px, 160px 240px; } }
+  .xmas-mode .lights { animation: twinkle 1.6s steps(2) infinite; }
+  @keyframes twinkle { 50% { filter: brightness(.65) saturate(.8); } }
+}
+body.xmas-mode .page { position: relative; z-index: 1; }
+.xmas-mode .tabs { border-bottom-color: rgba(226,182,74,.5); }
+.xmas-mode .tab { color: var(--xm-cream); }
+.xmas-mode .tab:hover { border-bottom-color: rgba(226,182,74,.6); }
+.xmas-mode .tab[aria-current="true"] { border-bottom-color: var(--xm-gold); color: var(--xm-gold); }
+.xmas-mode .tab:focus-visible { outline-color: var(--xm-gold); }
+.xmas-mode footer { color: var(--xm-cream); }
+.lights {
+  width: 100%; height: 36px;
+  background:
+    radial-gradient(ellipse 7px 10px at 22px 22px, #FF4D4D 70%, transparent 74%),
+    radial-gradient(ellipse 7px 10px at 82px 26px, #F2D27A 70%, transparent 74%),
+    radial-gradient(ellipse 7px 10px at 142px 22px, #4CC38A 70%, transparent 74%),
+    radial-gradient(ellipse 7px 10px at 202px 26px, #6FA8FF 70%, transparent 74%),
+    linear-gradient(transparent 9px, #23402F 9px, #23402F 11px, transparent 11px);
+  background-size: 240px 36px; background-repeat: repeat-x;
+}
+.xmas-star svg { width: 52px; height: 52px; display: block; filter: drop-shadow(0 0 10px rgba(242,210,122,.7)); }
+.xmas-mode .xmas h2 { font-family: 'Mountains of Christmas', var(--display); font-weight: 700; color: var(--xm-gold); font-size: clamp(42px, 8vw, 72px); line-height: 1.05; text-shadow: 0 2px 0 #7A1420; }
+.xmas-mode .xmas-sub { color: var(--xm-cream); font-size: 20px; max-width: 46ch; }
+.xmas-mode .xmas-status { color: var(--xm-gold); }
+.xmas-mode .doors { gap: 18px; margin-top: 6px; }
+.xmas-mode .door {
+  position: relative; overflow: hidden; min-height: 150px; border: 0; outline: 0;
+  background: var(--xm-red); color: var(--xm-cream);
+  box-shadow: 0 6px 14px rgba(0,0,0,.35), inset 0 0 0 3px rgba(255,255,255,.08);
+}
+.xmas-mode .door:nth-child(3n+2) { background: var(--xm-green); }
+.xmas-mode .door:nth-child(3n) { background: #C9962E; color: #3A1A08; }
+.xmas-mode .door::before, .xmas-mode .door::after { content: ""; position: absolute; background: var(--xm-gold); z-index: 0; }
+.xmas-mode .door::before { top: 0; bottom: 0; left: 50%; width: 14px; margin-left: -7px; }
+.xmas-mode .door::after { left: 0; right: 0; top: 50%; height: 14px; margin-top: -7px; }
+.xmas-mode .door:nth-child(3n)::before, .xmas-mode .door:nth-child(3n)::after { background: var(--xm-red); }
+.xmas-mode .door > * { position: relative; z-index: 1; }
+.xmas-mode .door .num {
+  width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: var(--xm-cream); color: var(--xm-red); font-family: 'Mountains of Christmas', var(--display); font-weight: 700; font-size: 34px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+.xmas-mode .door .what { background: rgba(15,51,36,.82); color: var(--xm-cream); padding: 2px 10px; font-size: 15px; }
+.xmas-mode .door:nth-child(3n) .what { background: rgba(255,247,230,.9); color: #3A1A08; }
+.xmas-mode .door:hover { transform: translateY(-2px); }
+.xmas-mode .door:focus-visible { outline: 3px solid var(--xm-gold); outline-offset: 3px; }
+.xmas-mode .door.locked { opacity: 1; filter: saturate(.75) brightness(.9); }
+.xmas-mode .door.open { background: var(--xm-cream); color: var(--xm-night); box-shadow: inset 0 0 0 3px var(--xm-gold), 0 6px 14px rgba(0,0,0,.3); }
+.xmas-mode .door.open::before, .xmas-mode .door.open::after { display: none; }
+.xmas-mode .door.open .num { background: var(--xm-red); color: var(--xm-cream); }
+.xmas-mode .door.open .what { background: transparent; color: var(--xm-night); font-weight: 700; }
+body.xmas-mode dialog::backdrop { background: rgba(60,8,16,.85); }
+
+/* A light festive touch across the site; the Christmas tab has its own decorations. */
+.tinsel {
+  height: 22px; margin-top: -8px;
+  background:
+    radial-gradient(circle, #FFF3C4 1.4px, transparent 2px) 6px 4px / 23px 13px repeat-x,
+    radial-gradient(circle at 50% 0, transparent 10px, #C9A23E 11px, #E6CB7A 13px, #B98A2E 15px, transparent 16px) 0 0 / 34px 18px repeat-x,
+    radial-gradient(circle, #B3202F 3px, transparent 3.6px) 0 4px / 34px 22px repeat-x;
+}
+header { position: relative; }
+.bauble { position: absolute; top: -8px; width: 44px; height: auto; transform-origin: 50% 0; }
+.b-left { left: 6%; }
+.b-right { right: 6%; }
+@media (prefers-reduced-motion: no-preference) {
+  .bauble { animation: sway 4s ease-in-out infinite alternate; }
+  .b-right { animation-delay: -2s; }
+  @keyframes sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+}
+@media (max-width: 600px) { .bauble { width: 24px; } .b-left { left: 0; } .b-right { right: 0; } }
+.holly { width: 56px; height: auto; margin: 4px auto 0; display: block; }
+.xmas-mode .tinsel { display: none; }
+
+.tinsel, .holly { display: none !important; }
+body.festive .tinsel { display: block !important; }
+body.festive .holly { display: block !important; }
+body.not-world header > :not(h1) { display: none !important; }
+body.festive.xmas-mode .tinsel { display: none !important; }
+.tabs { margin-top: 4px; }
+.progress { width: min(280px, 80%); height: 6px; margin: 8px auto 0; background: var(--paper-dark); border: 1px solid var(--gold-soft); }
+.progress span { display: block; height: 100%; background: var(--gold); }
+.world-extras { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.featured { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; padding-top: 10px; }
+.featured h2, .about h2 { margin: 0; font-family: var(--display); font-weight: 800; color: var(--ink); font-size: clamp(26px, 5vw, 36px); }
+.feat-sub { margin: 0 0 6px; font-style: italic; }
+.feat-card { width: 100%; text-align: left; }
+.ticks .tick.extra { display: none; }
+.show-all .ticks .tick.extra { display: block; }
+.more-btn { align-self: flex-start; }
+.near-more { grid-column: 1 / -1; justify-self: start; }
+.about { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.about h2 { text-align: center; }
+.about-lead { margin: 0; font-size: 22px; text-align: center; text-wrap: balance; }
+.about h3 { margin: 0 0 6px; font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--ink); }
+.about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+#aboutUsText { white-space: pre-line; font-size: 20px; line-height: 1.5; }
+.about-us { text-align: center; padding: 24px 28px; }
+.about-us.has-photo { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 32px; align-items: center; text-align: left; }
+.about-us.has-photo h3 { grid-column: 1; }
+.about-us.has-photo #aboutUsText { grid-column: 1; }
+.about-pola { display: none; }
+.about-us.has-photo .about-pola {
+  display: block; grid-column: 2; grid-row: 1 / span 2; width: 230px; margin: 6px 8px 6px 0;
+  background: #FFFDF6; padding: 12px 12px 44px; transform: rotate(3deg); box-shadow: 0 4px 12px rgba(0,0,0,.28); position: relative;
+}
+.about-pola img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.about-pola figcaption { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; font-style: italic; font-size: 19px; color: var(--ink); }
+@media (max-width: 640px) {
+  .about-us.has-photo { grid-template-columns: minmax(0, 1fr); text-align: center; }
+  .about-us.has-photo .about-pola { grid-column: 1; grid-row: 2; justify-self: center; width: min(230px, 70%); margin: 4px 0 14px; }
+  .about-us.has-photo #aboutUsText { grid-row: 3; }
+}
+.about-us h3 { font-size: 26px; margin-bottom: 10px; }
+.about-card, .about-us, .about-goal { background: #FBF6E8; border: 1px solid var(--gold-soft); padding: 18px 20px; }
+.about-card p, .about-goal p { margin: 0; }
+.about-card ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.atlas-hint { margin: 0; text-align: center; font-style: italic; font-size: 20px; }
+.pin.seen svg path { fill: #B33A2E; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip { background: transparent; color: var(--ink); border: 1px solid var(--ink); padding: 8px 18px; min-height: 44px; font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: 1px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+/* Postcards */
+.rack { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 26px 22px; }
+.post { perspective: 1600px; container-type: inline-size; }
+.inner { display: grid; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,.7,.3,1); }
+.inner.flipped { transform: rotateY(180deg); }
+.face {
+  grid-area: 1 / 1; min-height: 66cqi; box-sizing: border-box;
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 6px 14px rgba(59,46,30,.22);
+}
+.front {
+  border: 7px solid #FBF6E8; padding: 0; text-align: left; color: #FBF6E8; position: relative; overflow: hidden;
+  background: var(--c);
+  display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr auto; column-gap: 4px;
+}
+.front > .bgphoto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.front > .tint { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,43,44,.35), rgba(13,43,44,0) 45%, rgba(13,43,44,.6)); }
+.front > .tint::before { content: ""; position: absolute; inset: 0; background: var(--c); opacity: .32; }
+.front.no-place > .tint { display: none; }
+.front.no-place::before {
+  content: ""; position: absolute; inset: -50%;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.10) 0deg 7deg, transparent 7deg 14deg);
+}
+.front > * { position: relative; }
+.greet { grid-column: 1 / -1; padding: 5cqi 5cqi 0; font-family: var(--display); font-weight: 600; font-size: max(11px, 3.6cqi); letter-spacing: .3em; text-transform: uppercase; }
+.country {
+  grid-column: 1 / -1; align-self: center; padding: 2cqi 4cqi 2cqi 5cqi; white-space: nowrap;
+  font-family: var(--display); font-weight: 900; line-height: .95; text-transform: uppercase; letter-spacing: .02em;
+  font-size: min(16cqi, calc(104cqi / var(--len)));
+  color: #FBF6E8; text-shadow: 2px 2px 0 var(--ink), -1px -1px 0 var(--ink), 1px -1px 0 var(--ink), -1px 1px 0 var(--ink), 4px 4px 0 rgba(13,43,44,.35);
+}
+.polaroid {
+  grid-column: 2; grid-row: 3; align-self: end; width: 27cqi; margin: 0 4cqi 4cqi 0; padding: 1.4cqi 1.4cqi 5cqi;
+  background: #FBF6E8; transform: rotate(4deg); box-shadow: 0 3px 8px rgba(0,0,0,.4);
+}
+.polaroid img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.front:not(.no-drink) .glass, .front.no-drink .polaroid { display: none; }
+.glass { grid-column: 2; grid-row: 3; align-self: end; width: 26cqi; height: auto; margin: 0 3cqi 3cqi 0; }
+.dname { grid-column: 1; grid-row: 3; align-self: end; padding: 0 0 5cqi 5cqi; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.dname em { font-size: max(16px, 5.4cqi); line-height: 1.1; text-shadow: 1px 1px 0 rgba(13,43,44,.55); }
+.type { font-family: var(--display); font-size: max(11px, 2.9cqi); font-weight: 600; letter-spacing: .2em; background: #FBF6E8; color: var(--ink); padding: 2px 8px; }
+
+.back {
+  transform: rotateY(180deg); background: #FBF6E8; color: var(--brown); padding: 5cqi; cursor: pointer;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4cqi;
+  font-size: max(15px, 3.7cqi); line-height: 1.28;
+  background-image: linear-gradient(transparent calc(100% - 1px), rgba(138,106,38,.0) 0);
+}
+.recipe { display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--gold-soft); padding-right: 4cqi; min-width: 0; }
+.recipe h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: max(16px, 4.6cqi); line-height: 1.1; color: var(--ink); }
+.recipe .flav { margin: 0; font-style: italic; }
+.recipe ul { margin: 0; padding-left: 1.1em; }
+.recipe p { margin: 0; }
+.recipe .soon { font-style: italic; color: var(--gold); }
+.side { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 25cqi; min-width: 92px; }
+.stamp {
+  position: relative; width: 100%; aspect-ratio: 4 / 5; box-sizing: border-box; background: var(--c); color: #FBF6E8;
+  border: 5px dotted #FBF6E8; outline: 1px solid var(--gold-soft);
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 6px 4px;
+  font-family: var(--display); font-weight: 800; font-size: max(9px, 2.4cqi); letter-spacing: .08em; text-align: center; text-transform: uppercase;
+}
+.stamp svg { width: 60%; height: auto; }
+.postmark { position: absolute; width: 150%; left: -72%; top: 28%; transform: rotate(-14deg); pointer-events: none; }
+.lines { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: auto; font-style: italic; font-size: max(13px, 3cqi); }
+.lines span { border-bottom: 1px solid var(--gold-soft); padding-bottom: 2px; }
+.flip { grid-column: 1 / -1; justify-self: center; background: transparent; color: var(--ink); border: 1px solid var(--ink); padding: 4px 16px; min-height: 40px; font-family: var(--display); font-size: 14px; font-weight: 600; letter-spacing: 1px; }
+
+dialog { border: 0; padding: 0; background: transparent; width: min(94vw, 560px); max-height: 92vh; overflow-y: auto; overflow-x: hidden; }
+dialog.wide { width: min(94vw, 1080px); }
+dialog.wide #dlgCards { grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); }
+@media (max-width: 760px) { dialog.wide { width: min(94vw, 560px); } }
+dialog::backdrop { background: rgba(13,43,44,.92); }
+.dlg { display: flex; flex-direction: column; gap: 16px; padding: 4px 4px 12px; }
+.dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--paper); }
+.dlg-head h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 26px; letter-spacing: 1px; }
+.close { background: var(--paper); color: var(--ink); border: 0; padding: 6px 16px; min-height: 44px; font-family: var(--display); font-weight: 600; }
+footer { text-align: center; font-style: italic; font-size: 16px; }
+
+@media (max-width: 520px) {
+  .back { grid-template-columns: minmax(0, 1fr); }
+  .recipe { border-right: 0; padding-right: 0; }
+  .side { flex-direction: row; width: 100%; align-items: flex-start; }
+  .stamp { width: 84px; flex: none; }
+  .lines { margin-top: 0; }
+  .postmark { left: 40%; }
+}
+@media (prefers-reduced-motion: reduce) { .inner, .pin, .pin .tip { transition: none; } }
+</style>
+
+<div class="page">
+  <div class="tinsel" aria-hidden="true"></div>
+  <nav class="tabs" aria-label="Sections">
+    <a class="tab" href="#world">The Atlas</a>
+    <a class="tab" href="#christmas">25 Days of Christmas</a>
+    <a class="tab" href="#mix">What can I make?</a>
+    <a class="tab" href="#about">About</a>
+  </nav>
+  <header>
+    <h1>Around the World in 80 Sips</h1>
+    <p class="sub">Cocktails and mocktails from all over the world. Tap a gold pin to open that country's postcards, then flip one for its recipe.</p>
+    <div class="tally" id="tally"></div>
+    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+    <svg class="holly" viewBox="0 0 64 36" aria-hidden="true"><path d="M30 20C22 6 8 6 2 10C8 12 6 18 12 18C10 22 16 26 20 22C22 26 28 24 30 20Z" fill="#2E6B44"/><path d="M34 20C42 6 56 6 62 10C56 12 58 18 52 18C54 22 48 26 44 22C42 26 36 24 34 20Z" fill="#245A39"/><circle cx="28" cy="24" r="5" fill="#B3202F"/><circle cx="36" cy="24" r="5" fill="#C4283A"/><circle cx="32" cy="17" r="5" fill="#9B1C2E"/></svg>
+  </header>
+
+  <section aria-label="World atlas" id="atlasSection">
+    <div class="atlas-frame">
+    <button class="zoom-btn" id="zoomBtn" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15 15L21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg><span>Zoom into Europe</span></button>
+    <div class="atlas-scroll">
+      <div class="atlas" id="atlas">
+        <div class="atlas-layer" id="atlasLayer">
+          <img src="atlas.jpg" alt="Vintage world atlas with a gold pin on every country that has a drink" width="1200" height="600">
+        </div>
+      </div>
+    </div>
+    </div>
+    <p class="atlas-note">Tap a pin to see its postcards. Pins you have opened turn red.</p>
+  </section>
+
+
+  <div class="bar" id="typeBar" role="group" aria-label="Show">
+    <button class="chip" type="button" data-f="all" aria-pressed="true">All drinks</button>
+    <button class="chip" type="button" data-f="cocktail" aria-pressed="false">Cocktails</button>
+    <button class="chip" type="button" data-f="mocktail" aria-pressed="false">Mocktails</button>
+  </div>
+
+  <div class="world-extras" id="atlasHint">
+    <p class="atlas-hint">Pick a pin on the atlas to start your trip. <span id="visitedCount"></span></p>
+    <section class="featured" aria-labelledby="featTitle">
+      <h2 id="featTitle">Drink of the week</h2>
+      <p class="feat-sub" id="featSub"></p>
+      <div class="feat-card" id="featCard"></div>
+    </section>
+  </div>
+  <main class="rack" id="rack" aria-live="polite" hidden></main>
+
+  <section class="mix" id="mix" hidden aria-labelledby="mixTitle">
+    <div class="mix-head">
+      <h2 id="mixTitle">What can I make?</h2>
+      <p class="xmas-sub">Tick what you have at home to see which cocktails and mocktails you can make. Garnishes and ice don't count, so nobody misses out over a missing cherry.</p>
+    </div>
+    <div class="columns">
+      <form class="shelf" id="shelf" onsubmit="return false">
+        <div class="shelf-head"><p class="none" id="shelfNote"></p><button class="chip" id="clearShelf" type="button">Clear all</button></div>
+        <div id="mixGroups" class="shelf"></div>
+      </form>
+      <div class="results" id="mixResults" aria-live="polite">
+        <div class="bar left" role="group" aria-label="Type">
+          <button class="chip" type="button" data-type="all" aria-pressed="true">All drinks</button>
+          <button class="chip" type="button" data-type="cocktail" aria-pressed="false">Cocktails</button>
+          <button class="chip" type="button" data-type="mocktail" aria-pressed="false">Mocktails</button>
+        </div>
+        <h3 id="readyTitle"></h3>
+        <div class="tiles" id="ready"></div>
+        <h3 id="nearTitle"></h3>
+        <div class="tiles" id="near"></div>
+        <p class="none" id="mixMore"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about" hidden aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">About</h2>
+    <div class="about-us" id="aboutUs" hidden>
+      <h3>Hello from Wellington, New Zealand</h3>
+      <div id="aboutUsText"></div>
+      <figure class="about-pola" style="margin:0"><img id="aboutPhoto" src="photos/place-wellington.jpg" alt="Wellington, New Zealand"><figcaption>Wellington</figcaption></figure>
+    </div>
+    <p class="about-lead">Around the World in 80 Sips is a collection of cocktails and mocktails from all over the world. Every drink is a postcard: the front shows where it comes from, and the back has the recipe.</p>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>How it works</h3>
+        <ul>
+          <li>Tap a gold pin on the atlas to visit a country. Europe is busy, so use Zoom into Europe to get a closer look.</li>
+          <li>Flip a postcard to see the recipe.</li>
+          <li>Pins you've visited turn red, so you can see how far you've travelled.</li>
+        </ul>
+      </div>
+      <div class="about-card">
+        <h3>Something for everyone</h3>
+        <p>Almost every country has both a cocktail and a mocktail, so kids and anyone not drinking can come along for the trip too.</p>
+      </div>
+      <div class="about-card">
+        <h3>What can I make?</h3>
+        <p>Tick what's in your fridge and cupboard to see which drinks you can make right now, and which ones you're only one thing away from.</p>
+      </div>
+      <div class="about-card">
+        <h3>25 Days of Christmas</h3>
+        <p>Every December, a new mystery drink opens behind a door each day until Christmas, with a mocktail version of every cocktail.</p>
+      </div>
+    </div>
+    <div class="about-goal">
+      <h3>The 80 sips</h3>
+      <p id="aboutGoal"></p>
+    </div>
+  </section>
+
+  <section class="board" id="board" hidden aria-labelledby="boardTitle">
+    <div class="mix-head">
+      <h2 id="boardTitle">Reviews and requests</h2>
+      <p class="xmas-sub">Tried one of our drinks? Tell everyone what you thought. Want a drink added? Ask for it here.</p>
+    </div>
+    <p class="board-status" id="boardStatus" aria-live="polite"></p>
+    <div class="forms" id="boardForms">
+      <form class="panel" id="reviewForm">
+        <h3>Review a drink</h3>
+        <label for="rvDrink">Drink</label>
+        <select id="rvDrink"></select>
+        <fieldset class="group"><legend>Your rating</legend><div class="ticks">
+          <label class="tick"><input type="radio" name="rvStars" id="rv1" value="1"><span>★</span></label>
+          <label class="tick"><input type="radio" name="rvStars" id="rv2" value="2"><span>★★</span></label>
+          <label class="tick"><input type="radio" name="rvStars" id="rv3" value="3"><span>★★★</span></label>
+          <label class="tick"><input type="radio" name="rvStars" id="rv4" value="4"><span>★★★★</span></label>
+          <label class="tick"><input type="radio" name="rvStars" id="rv5" value="5"><span>★★★★★</span></label>
+        </div></fieldset>
+        <label for="rvText">What did you think?</label>
+        <textarea id="rvText" rows="4" maxlength="500"></textarea>
+        <button class="btn" type="submit">Post review</button>
+      </form>
+      <form class="panel" id="requestForm">
+        <h3>Ask for a new drink</h3>
+        <label for="rqDrink">Drink name</label>
+        <input id="rqDrink" type="text" maxlength="80">
+        <label for="rqWhere">Where is it from? (optional)</label>
+        <input id="rqWhere" type="text" maxlength="60">
+        <fieldset class="group"><legend>Cocktail or mocktail?</legend><div class="ticks">
+          <label class="tick"><input type="radio" name="rqType" id="rqC" value="cocktail"><span>Cocktail</span></label>
+          <label class="tick"><input type="radio" name="rqType" id="rqM" value="mocktail"><span>Mocktail</span></label>
+          <label class="tick"><input type="radio" name="rqType" id="rqE" value="either" checked><span>Either</span></label>
+        </div></fieldset>
+        <label for="rqText">Anything else? (optional)</label>
+        <textarea id="rqText" rows="3" maxlength="500"></textarea>
+        <button class="btn" type="submit">Send request</button>
+      </form>
+    </div>
+    <div class="feeds">
+      <section aria-labelledby="rvHead"><h3 id="rvHead">Latest reviews</h3><div class="feed" id="reviewList"></div></section>
+      <section aria-labelledby="rqHead"><h3 id="rqHead">Drink requests</h3><div class="feed" id="requestList"></div></section>
+    </div>
+  </section>
+
+  <section class="insta" id="insta" hidden aria-labelledby="instaTitle">
+    <svg class="insta-icon" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#0D2B2C" stroke-width="3"><rect x="5" y="5" width="38" height="38" rx="11"/><circle cx="24" cy="24" r="9"/><circle cx="35" cy="13" r="2" fill="#0D2B2C" stroke="none"/></svg>
+    <h2 id="instaTitle">Follow our travels</h2>
+    <div id="instaBody" class="insta-body"></div>
+  </section>
+
+  <section class="xmas" id="xmas" hidden aria-labelledby="xmasTitle">
+    <div class="lights" aria-hidden="true"></div>
+    <div class="xmas-star" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 3L40 23L61 24L45 38L50 59L32 47L14 59L19 38L3 24L24 23Z" fill="#F2D27A"/></svg></div>
+    <h2 id="xmasTitle">25 Days of Christmas</h2>
+    <p class="xmas-sub">A mystery drink behind every door, and every cocktail comes with a mocktail version. Each door opens on its day in December.</p>
+    <p class="xmas-status" id="xmasStatus" aria-live="polite"></p>
+    <div class="doors" id="doors"></div>
+    <div class="lights" aria-hidden="true"></div>
+  </section>
+
+  <div class="tinsel" aria-hidden="true"></div>
+  <footer>Cocktails are for adults 18 and over, so please enjoy them responsibly. Every mocktail is alcohol-free.</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="dlgTitle"></h2><button class="close" id="closeDlg" type="button">Close</button></div>
+    <div id="dlgCards" class="rack"></div>
+  </div>
+</dialog>
+
+<script>
+/* Where each country's pin sits on the atlas picture, in pixels on the 1200 by 600 image. */
+const PLACES = {
+  "Japan": ["Tokyo", 998, 250, "#3E6A9E"], "India": ["Mumbai", 788, 318, "#C98A16"], "Brazil": ["Rio de Janeiro", 410, 445, "#2F7A44"],
+  "Greece": ["Athens", 630, 249, "#2D5F9A"], "Thailand": ["Bangkok", 877, 325, "#2E8B76"], "Spain": ["Seville", 545, 248, "#B5452C"],
+  "France": ["Nice", 584, 233, "#7A62A6"], "Morocco": ["Marrakech", 538, 265, "#2E8556"], "Mexico": ["Mexico City", 250, 308, "#B85C35"],
+  "Jamaica": ["Kingston", 319, 314, "#3E7F3A"], "Korea": ["Seoul", 965, 242, "#4D5FA8"], "Turkey": ["Istanbul", 652, 227, "#A93245"],
+  "Sweden": ["Stockholm", 607, 182, "#2C6B99"], "Italy": ["Rome", 600, 233, "#C4562F"], "Egypt": ["Cairo", 665, 265, "#B07A1F"],
+  "Hawaii": ["Honolulu", 77, 302, "#C2475B"], "Colombia": ["Bogotá", 320, 355, "#C79A12"], "USA": ["New York", 327, 247, "#3B4E7A"],
+  "Peru": ["Lima", 320, 400, "#8A3A68"], "Lebanon": ["Beirut", 677, 250, "#4E7F3E"], "Philippines": ["Manila", 945, 322, "#D08A1E"],
+  "Cuba": ["Havana", 303, 300, "#2F6E8E"], "Puerto Rico": ["San Juan", 352, 313, "#C0573A"], "England": ["London", 560, 203, "#5A4E8A"], "Finland": ["Helsinki", 631, 178, "#2F5C9E"],
+  "Germany": ["Berlin", 616, 199, "#3E4A5A"], "Switzerland": ["Geneva", 588, 221, "#C4202F"], "Poland": ["Warsaw", 650, 208, "#A8344A"],
+  "Norway": ["Oslo", 594, 178, "#2C4E7A"], "Scotland": ["Edinburgh", 551, 190, "#2E5C8A"], "Ireland": ["Cork", 537, 204, "#2E7A44"],
+  "New Zealand": ["Auckland", 1110, 486, "#1E3A5F"], "Australia": ["Sydney", 1042, 474, "#C26A2A"],
+};
+
+/* Recipes from the 80 Sips master list. Drinks with no recipe yet show "coming soon" on the back. */
+const DRINKS = [
+  { name: "Tokyo Yuzu Fizz", country: "Japan", type: "cocktail", glass: "tall", tint: "#EDE3A0", flavour: "Yuzu, gin, soda",
+    items: "40ml gin | 20ml yuzu juice | 10ml sugar syrup | Soda to top", method: "Shake gin, yuzu and syrup, strain over ice, top with soda and add yuzu peel." },
+  { name: "Caipirinha", country: "Brazil", type: "cocktail", glass: "rocks", tint: "#CFE3A6", flavour: "Lime, sugar, cachaça",
+    items: "50ml cachaça | 1/2 lime cut in wedges | 15ml sugar syrup", method: "Muddle the lime and syrup in the glass, fill with crushed ice, add the cachaça and stir." },
+  { name: "Greek Ouzo Sunset", country: "Greece", type: "cocktail", glass: "tall", tint: "#F08A3E", flavour: "Ouzo, orange, pomegranate",
+    items: "30ml ouzo | 60ml orange juice | 20ml pomegranate syrup | Soda", method: "Fill a glass with ice, add the ouzo and orange, drizzle in the pomegranate for a sunset and top with soda." },
+  { name: "Spanish Sangria Blanco", country: "Spain", type: "cocktail", glass: "wine", tint: "#F2D27A", flavour: "White wine, peach, orange",
+    items: "90ml white wine | 30ml peach liqueur | 40ml orange juice | Peach slices, mint", method: "Fill a wine glass with ice, add everything, stir and finish with the fruit and mint." },
+  { name: "French Riviera Spritz", country: "France", type: "mocktail", glass: "flute", tint: "#CDB8E0", flavour: "Lavender, lemon, bubbles",
+    items: "15ml lavender syrup | 20ml lemon juice | 100ml non-alcoholic sparkling wine", method: "Pour the lavender and lemon into a flute, top with sparkling wine and add a lemon twist." },
+  { name: "Moroccan Mint Tea Spritz", country: "Morocco", type: "mocktail", glass: "tall", tint: "#C7B566", flavour: "Mint, green tea, honey",
+    items: "120ml strong mint tea, cooled | 15ml honey syrup | 10ml lemon juice | Soda", method: "Shake the tea, honey and lemon, strain over ice, top with soda and add a mint sprig." },
+  { name: "Mexican Paloma Mocktail", country: "Mexico", type: "mocktail", glass: "tall", tint: "#F4A3A0", flavour: "Grapefruit, lime, salt",
+    items: "100ml pink grapefruit juice | 15ml lime juice | 10ml agave syrup | Soda | Salt rim", method: "Salt the rim, add ice, pour in the grapefruit, lime and agave, then top with soda." },
+  { name: "Korean Yuzu Honey Tea", country: "Korea", type: "mocktail", glass: "mug", tint: "#F2C14A", flavour: "Yuzu, honey, ginger",
+    items: "30ml yuzu marmalade | 10ml honey | 5ml grated ginger | 150ml hot water, then ice", method: "Stir the marmalade, honey and ginger into hot water, add ice to chill, then strain." },
+  { name: "Swedish Lingonberry Fizz", country: "Sweden", type: "mocktail", glass: "wine", tint: "#D2475A", flavour: "Lingonberry, rosemary, bubbles",
+    items: "40ml lingonberry syrup | 15ml lemon juice | Rosemary sprig | 100ml soda", method: "Fill a glass with ice, add the syrup and lemon, top with soda and add the rosemary." },
+  { name: "Italian Limoncello Cooler", country: "Italy", type: "mocktail", glass: "tall", tint: "#F5E27A", flavour: "Lemon, basil, bubbles",
+    items: "60ml non-alcoholic limoncello | 6 basil leaves | 15ml lemon juice | 100ml soda", method: "Press the basil with the lemon, add the limoncello and ice, then top with soda." },
+  { name: "Hawaiian Lava Flow Mocktail", country: "Hawaii", type: "mocktail", glass: "tall", tint: "#E86A6A", flavour: "Strawberry, coconut, pineapple",
+    items: "60ml strawberry puree | 60ml pineapple juice | 30ml coconut cream", method: "Blend the coconut and pineapple. Pour the strawberry into the glass first, then the coconut mix, so it flows like lava." },
+  { name: "Colombian Lulo Spritz", country: "Colombia", type: "mocktail", glass: "wine", tint: "#E5D25A", flavour: "Lulo, lime, bubbles",
+    items: "70ml lulo juice | 15ml lime juice | 10ml sugar syrup | Soda", method: "Shake the lulo, lime and syrup, pour over ice and top with soda." },
+  { name: "New York Egg Cream", country: "USA", type: "mocktail", glass: "tall", tint: "#8A5A3B", flavour: "Chocolate, vanilla, fizz",
+    items: "30ml chocolate syrup | 60ml milk | 90ml soda water", method: "Stir the chocolate and milk in a glass, then top with soda and stir hard for a foam." },
+
+  { name: "Limonada Suíça", country: "Brazil", type: "mocktail", glass: "tall", tint: "#E3EFC9", flavour: "Lime, condensed milk",
+    items: "2 limes, cut into wedges | 60ml sweetened condensed milk | 200ml cold water | Ice", method: "Blend the limes with the water and ice for 10 seconds only, strain, then blend again with the condensed milk. Makes 2 glasses." },
+  { name: "Paloma", country: "Mexico", type: "cocktail", glass: "tall", tint: "#F4A3A0", flavour: "Tequila, grapefruit, lime",
+    items: "50ml tequila | 15ml lime juice | 120ml grapefruit soda | Pinch of salt | Salt rim", method: "Salt the rim, fill with ice, add the tequila, lime and a pinch of salt, then top with grapefruit soda." },
+  { name: "Aperol Spritz", country: "Italy", type: "cocktail", glass: "wine", tint: "#E8682A", flavour: "Bitter orange, bubbles",
+    items: "60ml Aperol | 90ml prosecco | 30ml soda | Orange slice", method: "Fill a wine glass with ice, add the prosecco, then the Aperol, then the soda. Stir once and add the orange slice." },
+  { name: "Yuzu Soda", country: "Japan", type: "mocktail", glass: "tall", tint: "#EDE3A0", flavour: "Yuzu, honey, bubbles",
+    items: "20ml yuzu juice | 15ml honey | 150ml soda | Ice", method: "Stir the yuzu and honey together in a tall glass, add ice and top with soda." },
+  { name: "Mint Gin Fizz", country: "Morocco", type: "cocktail", glass: "tall", tint: "#CFE3C0", flavour: "Mint, honey, lemon",
+    items: "45ml gin | 20ml lemon juice | 15ml honey | 8 mint leaves | 100ml soda", method: "Gently press the mint with the lemon and honey, shake with the gin and ice, strain over fresh ice and top with soda." },
+  { name: "Vyssinada", country: "Greece", type: "mocktail", glass: "tall", tint: "#8E1F33", flavour: "Sour cherry, lemon",
+    items: "40ml sour cherry syrup | 150ml soda | 10ml lemon juice | Ice | Lemon slice", method: "Pour the cherry syrup and lemon over ice, top with soda and stir." },
+  { name: "Spanish Sangria Mocktail", country: "Spain", type: "mocktail", glass: "wine", tint: "#F2D27A", flavour: "White grape, peach, orange",
+    items: "90ml white grape juice | 40ml orange juice | 30ml peach nectar | Soda to top | Peach slices, mint", method: "Fill a wine glass with ice, add the juices, top with soda and finish with the fruit and mint." },
+  { name: "Kir Royale", country: "France", type: "cocktail", glass: "flute", tint: "#8A1F45", flavour: "Blackcurrant, bubbles",
+    items: "15ml crème de cassis | 120ml prosecco", method: "Pour the cassis into a flute and top slowly with prosecco." },
+  { name: "Yakult Soju", country: "Korea", type: "cocktail", glass: "tall", tint: "#F4F1E6", flavour: "Soju, yoghurt drink, lemon-lime",
+    items: "60ml soju | 1 small bottle Yakult | 100ml lemonade | Ice", method: "Fill a glass with ice, add the soju and Yakult, then top with lemonade and stir." },
+  { name: "Midsummer Elderflower Collins", country: "Sweden", type: "cocktail", glass: "tall", tint: "#EEF0D0", flavour: "Elderflower, lemon, gin",
+    items: "40ml gin | 20ml elderflower cordial | 20ml lemon juice | 100ml soda | Lemon slice", method: "Fill a tall glass with ice, add the gin, cordial and lemon, top with soda and stir." },
+  { name: "Hawaiian Lava Flow", country: "Hawaii", type: "cocktail", glass: "tall", tint: "#E86A6A", flavour: "Strawberry, coconut, pineapple",
+    items: "30ml white rum | 30ml coconut rum | 60ml strawberry puree | 60ml pineapple juice | 30ml coconut cream", method: "Blend the rums, pineapple and coconut cream with ice. Pour the strawberry into the glass first, then the coconut mix, so it flows like lava." },
+  { name: "Lulo Aguardiente Spritz", country: "Colombia", type: "cocktail", glass: "wine", tint: "#E5D25A", flavour: "Lulo, aniseed, lime",
+    items: "40ml aguardiente | 70ml lulo juice | 15ml lime juice | 10ml sugar syrup | Soda to top", method: "Shake everything except the soda with ice, pour into a wine glass and top with soda." },
+  { name: "Manhattan", country: "USA", type: "cocktail", glass: "coupe", tint: "#8A3A1E", flavour: "Whiskey, sweet vermouth",
+    items: "50ml rye or bourbon whiskey | 25ml sweet vermouth | 2 dashes Angostura bitters | Maraschino cherry", method: "Stir with ice for 30 seconds, strain into a chilled coupe and drop in the cherry." },
+  { name: "Lonkero", country: "Finland", type: "cocktail", glass: "tall", tint: "#F6D9C8", flavour: "Gin, grapefruit, bubbles",
+    items: "40ml gin | 120ml grapefruit soda | Ice | Grapefruit slice", method: "Fill a tall glass with ice, add the gin, top with grapefruit soda and stir gently. Finland's famous long drink, first made for the 1952 Helsinki Olympics." },
+  { name: "Mustikka Lemonade", country: "Finland", type: "mocktail", glass: "tall", tint: "#5B4A9E", flavour: "Blueberry, lemon, bubbles",
+    items: "40ml blueberry juice | 20ml lemon juice | 15ml sugar syrup | 100ml soda | Ice | A few blueberries", method: "Stir the blueberry, lemon and syrup together over ice, top with soda and drop in the blueberries. Mustikka is Finnish for blueberry." },
+  { name: "Radler", country: "Germany", type: "cocktail", glass: "tall", tint: "#F2D46A", flavour: "Lager, lemonade",
+    items: "165ml lager | 165ml lemonade | Lemon slice", method: "Pour the lager into a tall glass, top with lemonade and stir gently. Germany's favourite summer drink, first made for cyclists." },
+  { name: "Apfelschorle", country: "Germany", type: "mocktail", glass: "tall", tint: "#E8C25A", flavour: "Apple, bubbles",
+    items: "150ml apple juice | 150ml sparkling water | Ice", method: "Pour half apple juice and half sparkling water over ice. Germans drink this everywhere, all year round." },
+  { name: "Kafi Lutz", country: "Switzerland", type: "cocktail", glass: "mug", tint: "#A87A4A", flavour: "Coffee, plum schnapps",
+    items: "150ml weak hot coffee | 30ml plum schnapps | 2 tsp sugar", method: "Stir the sugar into the hot coffee in a heatproof glass, then add the schnapps. A warming favourite from Lucerne." },
+  { name: "Holunderblüten Spritz", country: "Switzerland", type: "mocktail", glass: "wine", tint: "#EEF0D0", flavour: "Elderflower, mint, bubbles",
+    items: "30ml elderflower cordial | 150ml sparkling water | 4 mint leaves | Lemon slice", method: "Pour the cordial over ice, top with sparkling water and add the mint and lemon. Swiss families make their own elderflower syrup every summer." },
+  { name: "Szarlotka", country: "Poland", type: "cocktail", glass: "tall", tint: "#E3C47A", flavour: "Bison grass vodka, apple",
+    items: "50ml bison grass vodka | 150ml cloudy apple juice | Apple slice | Pinch of cinnamon", method: "Fill a tall glass with ice, add the vodka and top with apple juice. It's named after Polish apple cake." },
+  { name: "Kompot", country: "Poland", type: "mocktail", glass: "tall", tint: "#C44A5A", flavour: "Simmered summer fruit",
+    items: "300g mixed fruit, like strawberries, cherries and apples | 1 litre water | 50g sugar", method: "Simmer the fruit, water and sugar for 10 minutes, let it cool, then chill and serve over ice. Makes about 5 glasses." },
+  { name: "Nordic Aquavit Mule", country: "Norway", type: "cocktail", glass: "mug", tint: "#E6D9A0", flavour: "Aquavit, ginger, lime",
+    items: "45ml aquavit | 15ml lime juice | 120ml ginger beer | Dill sprig", method: "Fill a mug with ice, add the aquavit and lime, top with ginger beer and add the dill. Aquavit is Norway's caraway spirit." },
+  { name: "Solbær Fizz", country: "Norway", type: "mocktail", glass: "tall", tint: "#5A2440", flavour: "Blackcurrant, lemon, bubbles",
+    items: "40ml blackcurrant cordial | 10ml lemon juice | 150ml sparkling water | Ice", method: "Stir the cordial and lemon over ice and top with sparkling water. Solbærsaft is a Norwegian childhood favourite." },
+  { name: "Rusty Nail", country: "Scotland", type: "cocktail", glass: "rocks", tint: "#C98A3A", flavour: "Scotch whisky, honey, herbs",
+    items: "45ml Scotch whisky | 25ml Drambuie | Lemon peel", method: "Stir with ice and strain over one large ice cube. Drambuie is a Scottish whisky liqueur with honey and herbs." },
+  { name: "Cranachan Smoothie", country: "Scotland", type: "mocktail", glass: "tall", tint: "#E8A0B0", flavour: "Raspberry, honey, oats",
+    items: "150ml milk | 80g raspberries | 15ml honey | 1 tbsp toasted oats | 30ml cream", method: "Blend everything until smooth and top with a few more oats. It's based on cranachan, Scotland's raspberry and oat pudding." },
+  { name: "Irish Coffee", country: "Ireland", type: "cocktail", glass: "mug", tint: "#4A2C1D", flavour: "Irish whiskey, coffee, cream",
+    items: "40ml Irish whiskey | 120ml hot strong coffee | 15ml brown sugar syrup | 30ml cream, lightly whipped", method: "Stir the whiskey and syrup into the hot coffee in a heatproof glass, then float the cream on top over the back of a spoon. First made at Foynes airport in 1943." },
+  { name: "Irish Coffee Mocktail", country: "Ireland", type: "mocktail", glass: "mug", tint: "#6B4A2E", flavour: "Coffee, brown sugar, cream",
+    items: "150ml hot strong coffee | 15ml brown sugar syrup | 2 drops vanilla essence | 30ml cream, lightly whipped", method: "Stir the syrup and vanilla into the hot coffee, then float the cream on top over the back of a spoon." },
+  { name: "Feijoa Mule", country: "New Zealand", type: "cocktail", glass: "mug", tint: "#C9D98A", flavour: "Feijoa, ginger, lime",
+    items: "45ml vodka | 30ml feijoa puree | 15ml lime juice | 120ml ginger beer | Mint sprig", method: "Fill a mug with ice, add the vodka, feijoa and lime, top with ginger beer and add the mint. Feijoa vodka makes it even more Kiwi." },
+  { name: "L&P Spider", country: "New Zealand", type: "mocktail", glass: "tall", tint: "#F2C14A", flavour: "L&P, vanilla ice cream",
+    items: "200ml L&P | 2 scoops vanilla ice cream", method: "Put the ice cream in a tall glass and slowly pour the L&P over it so it fizzes up. A Kiwi childhood classic." },
+  { name: "Lamington Martini", country: "Australia", type: "cocktail", glass: "martini", tint: "#5A3424", flavour: "Chocolate, coconut, vanilla",
+    items: "30ml vanilla vodka | 30ml chocolate liqueur | 30ml coconut cream | Chocolate sauce and desiccated coconut rim", method: "Dip the rim in chocolate sauce then coconut. Shake the rest hard with ice and strain into the glass. Inspired by Australia's favourite cake." },
+  { name: "Lemon, Lime and Bitters", country: "Australia", type: "mocktail", glass: "tall", tint: "#F2D0B8", flavour: "Lemonade, lime, bitters",
+    items: "150ml lemonade | 15ml lime cordial | 4 dashes Angostura bitters | Lime wedge", method: "Fill a tall glass with ice, add the lime cordial and bitters, then top with lemonade. Australia's favourite pub soft drink. Bitters have a tiny splash of alcohol, so leave them out for kids." },
+
+  { name: "Mojito", country: "Cuba", type: "cocktail", group: "classic", glass: "tall", tint: "#D7E8DC", flavour: "Mint, lime, rum",
+    items: "45ml white rum | 20ml lime juice | 15ml sugar syrup | 6 mint leaves | Soda to top | Crushed ice", method: "Gently press the mint with the lime and syrup, fill with crushed ice, add the rum, top with soda and stir." },
+  { name: "Daiquiri", country: "Cuba", type: "cocktail", group: "classic", glass: "coupe", tint: "#E8EDC4", flavour: "Rum, lime, sugar",
+    items: "60ml white rum | 25ml lime juice | 15ml sugar syrup", method: "Shake hard with ice and strain into a chilled coupe." },
+  { name: "Virgin Mojito", country: "Cuba", type: "mocktail", group: "classic", glass: "tall", tint: "#E3F0E3", flavour: "Mint, lime, bubbles",
+    items: "20ml lime juice | 15ml sugar syrup | 8 mint leaves | 150ml soda water | Crushed ice", method: "Gently press the mint with the lime and syrup, fill with crushed ice, top with soda and stir." },
+  { name: "Margarita", country: "Mexico", type: "cocktail", group: "classic", glass: "coupe", tint: "#E3E89A", flavour: "Tequila, lime, orange",
+    items: "50ml tequila | 25ml lime juice | 20ml triple sec | Salt rim", method: "Salt half the rim of the glass. Shake the rest with ice and strain into the glass." },
+  { name: "Virgin Margarita", country: "Mexico", type: "mocktail", group: "classic", glass: "coupe", tint: "#EAEFB0", flavour: "Lime, orange, salt",
+    items: "30ml lime juice | 30ml orange juice | 15ml agave syrup | Splash of soda | Salt rim", method: "Salt the rim. Shake the juices and agave with ice, strain into the glass and add a splash of soda." },
+  { name: "Piña Colada", country: "Puerto Rico", type: "cocktail", group: "classic", glass: "tall", tint: "#F3E7C0", flavour: "Pineapple, coconut, rum",
+    items: "50ml white rum | 30ml coconut cream | 90ml pineapple juice | 1 cup ice", method: "Blend everything until smooth and pour into a tall glass. Add a pineapple wedge." },
+  { name: "Virgin Piña Colada", country: "Puerto Rico", type: "mocktail", group: "classic", glass: "tall", tint: "#F6EDCF", flavour: "Pineapple, coconut",
+    items: "45ml coconut cream | 120ml pineapple juice | 1 cup ice", method: "Blend everything until smooth and pour into a tall glass. Add a pineapple wedge." },
+  { name: "Cosmopolitan", country: "USA", type: "cocktail", group: "classic", glass: "martini", tint: "#E86A86", flavour: "Cranberry, lime, orange",
+    items: "40ml citrus vodka | 15ml triple sec | 15ml lime juice | 30ml cranberry juice", method: "Shake with ice, strain into a chilled martini glass and add an orange twist." },
+  { name: "Moscow Mule", country: "USA", type: "cocktail", group: "classic", glass: "mug", tint: "#E6D9A0", flavour: "Vodka, ginger, lime",
+    items: "50ml vodka | 15ml lime juice | 120ml ginger beer | Lime wedge", method: "Fill a mug with ice, add the vodka and lime, top with ginger beer and add the lime wedge." },
+  { name: "Shirley Temple", country: "USA", type: "mocktail", group: "classic", glass: "tall", tint: "#F08A8A", flavour: "Ginger ale, grenadine, cherry",
+    items: "150ml ginger ale | 15ml grenadine | Maraschino cherry | Ice", method: "Fill a glass with ice, pour in the ginger ale, drizzle in the grenadine and top with the cherry." },
+  { name: "Arnold Palmer", country: "USA", type: "mocktail", group: "classic", glass: "tall", tint: "#D9A85A", flavour: "Iced tea, lemonade",
+    items: "100ml iced black tea | 100ml lemonade | Lemon slice | Ice", method: "Fill a glass with ice, pour in the tea and lemonade, stir and add the lemon." },
+  { name: "Espresso Martini", country: "England", type: "cocktail", group: "classic", glass: "martini", tint: "#3B2418", flavour: "Coffee, vodka",
+    items: "50ml vodka | 30ml coffee liqueur | 30ml fresh espresso | 10ml sugar syrup", method: "Shake very hard with ice and strain into a chilled martini glass. Top with three coffee beans." },
+];
+
+/* More drinks: only in the What can I make? tab, not on the atlas. "Home" means no single country. */
+const LIBRARY = [
+{
+"name": "Negroni",
+"country": "Italy",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#B5282E",
+"colour": "#2D5F9A",
+"flavour": "Gin, Campari, sweet vermouth",
+"items": "30ml gin | 30ml Campari | 30ml sweet vermouth | Orange peel",
+"method": "Stir with ice, strain over fresh ice and add the orange peel."
+},
+{
+"name": "Old Fashioned",
+"country": "USA",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#B8732E",
+"colour": "#B5452C",
+"flavour": "Bourbon, bitters, orange",
+"items": "50ml bourbon whiskey | 5ml sugar syrup | 2 dashes Angostura bitters | Orange peel",
+"method": "Stir with ice for 30 seconds and strain over one large ice cube. Twist the orange peel over the top."
+},
+{
+"name": "Whiskey Sour",
+"country": "USA",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#E8C27A",
+"colour": "#2E8556",
+"flavour": "Bourbon, lemon, foam",
+"items": "50ml bourbon whiskey | 25ml lemon juice | 15ml sugar syrup | 1 egg white (optional)",
+"method": "Shake hard without ice for the foam, then with ice. Strain over fresh ice."
+},
+{
+"name": "Amaretto Sour",
+"country": "Italy",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#E3A84A",
+"colour": "#7A62A6",
+"flavour": "Almond, lemon",
+"items": "45ml amaretto | 25ml lemon juice | 10ml sugar syrup | 1 egg white (optional) | Maraschino cherry",
+"method": "Shake hard without ice, then with ice. Strain over fresh ice and add the cherry."
+},
+{
+"name": "Dark and Stormy",
+"country": "Bermuda",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#7A4A2A",
+"colour": "#C79A12",
+"flavour": "Dark rum, ginger, lime",
+"items": "60ml dark rum | 100ml ginger beer | 10ml lime juice | Lime wedge",
+"method": "Fill a tall glass with ice and ginger beer, add the lime, then slowly pour the rum on top so it floats like a storm cloud."
+},
+{
+"name": "Tequila Sunrise",
+"country": "USA",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#F08A3E",
+"colour": "#A93245",
+"flavour": "Tequila, orange, grenadine",
+"items": "45ml tequila | 90ml orange juice | 15ml grenadine | Orange slice",
+"method": "Fill a tall glass with ice, add the tequila and orange juice, then pour the grenadine down the side so it sinks into a sunrise."
+},
+{
+"name": "Bloody Mary",
+"country": "France",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#B3262A",
+"colour": "#2E8B76",
+"flavour": "Tomato, spice, lemon",
+"items": "45ml vodka | 90ml tomato juice | 15ml lemon juice | 3 dashes Worcestershire sauce | 2 dashes hot sauce | Pinch of celery salt and black pepper | Celery stick",
+"method": "Stir everything with ice in a tall glass and add the celery stick."
+},
+{
+"name": "White Russian",
+"country": "Home",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#C9A987",
+"colour": "#3B4E7A",
+"flavour": "Vodka, coffee, cream",
+"items": "40ml vodka | 20ml coffee liqueur | 30ml cream",
+"method": "Fill a short glass with ice, add the vodka and coffee liqueur, then pour the cream over the top."
+},
+{
+"name": "Mudslide",
+"country": "Cayman Islands",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#8A5A3B",
+"colour": "#2D5F9A",
+"flavour": "Coffee, Irish cream, vodka",
+"items": "30ml vodka | 30ml coffee liqueur | 30ml Irish cream | 30ml cream",
+"method": "Shake with ice and strain over fresh ice, or blend with a scoop of ice cream for a thick shake."
+},
+{
+"name": "Hugo",
+"country": "Italy",
+"type": "cocktail",
+"glass": "wine",
+"tint": "#E3EFC9",
+"colour": "#B5452C",
+"flavour": "Elderflower, mint, bubbles",
+"items": "20ml elderflower cordial | 100ml prosecco | 30ml soda | 6 mint leaves | Lime slice",
+"method": "Gently press the mint in a wine glass, add ice and the cordial, then top with prosecco and soda."
+},
+{
+"name": "Sidecar",
+"country": "France",
+"type": "cocktail",
+"glass": "coupe",
+"tint": "#D9963A",
+"colour": "#2E8556",
+"flavour": "Brandy, orange, lemon",
+"items": "50ml brandy | 25ml triple sec | 20ml lemon juice | Sugar rim (optional)",
+"method": "Shake with ice and strain into a chilled coupe."
+},
+{
+"name": "Boulevardier",
+"country": "France",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#9E2A22",
+"colour": "#7A62A6",
+"flavour": "Bourbon, Campari, vermouth",
+"items": "40ml bourbon whiskey | 30ml Campari | 30ml sweet vermouth | Orange peel",
+"method": "Stir with ice, strain over fresh ice and add the orange peel."
+},
+{
+"name": "French 75",
+"country": "France",
+"type": "cocktail",
+"glass": "flute",
+"tint": "#EEE3A8",
+"colour": "#C79A12",
+"flavour": "Gin, lemon, bubbles",
+"items": "30ml gin | 15ml lemon juice | 10ml sugar syrup | 90ml prosecco",
+"method": "Shake the gin, lemon and syrup with ice, strain into a flute and top with prosecco."
+},
+{
+"name": "Watermelon Margarita",
+"country": "Mexico",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#E8505B",
+"colour": "#A93245",
+"flavour": "Watermelon, lime, tequila",
+"items": "45ml tequila | 90ml watermelon juice | 20ml lime juice | 15ml triple sec | Salt rim",
+"method": "Salt the rim, shake everything with ice and strain over fresh ice."
+},
+{
+"name": "Spicy Margarita",
+"country": "Mexico",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#D9E07A",
+"colour": "#2E8B76",
+"flavour": "Tequila, lime, jalapeño",
+"items": "50ml tequila | 25ml lime juice | 15ml agave syrup | 2 jalapeño rounds | Salt rim",
+"method": "Muddle the jalapeño with the agave, shake with the tequila, lime and ice, then strain over fresh ice."
+},
+{
+"name": "Mango Pineapple Mojito",
+"country": "Cuba",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#F5C04A",
+"colour": "#3B4E7A",
+"flavour": "Mango, pineapple, mint",
+"items": "45ml white rum | 60ml mango puree | 30ml pineapple juice | 20ml lime juice | 8 mint leaves | Soda to top",
+"method": "Gently press the mint with the lime, add crushed ice, the rum, mango and pineapple, stir and top with soda."
+},
+{
+"name": "Red Sangria",
+"country": "Spain",
+"type": "cocktail",
+"glass": "wine",
+"tint": "#7A1F2E",
+"colour": "#2D5F9A",
+"flavour": "Red wine, brandy, orange",
+"items": "120ml red wine | 30ml brandy | 30ml orange juice | 10ml sugar syrup | Chopped orange and apple | Soda to top",
+"method": "Stir the wine, brandy, juice and syrup with the fruit, chill if you have time, then serve over ice with a splash of soda."
+},
+{
+"name": "Woo Woo",
+"country": "Home",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#D82E4A",
+"colour": "#B5452C",
+"flavour": "Peach, cranberry, vodka",
+"items": "30ml vodka | 30ml peach schnapps | 90ml cranberry juice | Lime wedge",
+"method": "Fill a glass with ice, add everything and stir."
+},
+{
+"name": "Vodka Martini",
+"country": "Home",
+"type": "cocktail",
+"glass": "martini",
+"tint": "#EEF0E8",
+"colour": "#2E8556",
+"flavour": "Vodka, dry vermouth",
+"items": "60ml vodka | 10ml dry vermouth | Lemon twist or olive",
+"method": "Stir with plenty of ice for 30 seconds and strain into a chilled martini glass."
+},
+{
+"name": "Banana Daiquiri",
+"country": "Cuba",
+"type": "cocktail",
+"glass": "coupe",
+"tint": "#F2E3A0",
+"colour": "#7A62A6",
+"flavour": "Banana, rum, lime",
+"items": "50ml white rum | 1 ripe banana | 20ml lime juice | 15ml sugar syrup | 1 cup ice",
+"method": "Blend until smooth and pour into a coupe."
+},
+{
+"name": "Grasshopper",
+"country": "USA",
+"type": "cocktail",
+"glass": "coupe",
+"tint": "#9ED39A",
+"colour": "#C79A12",
+"flavour": "Mint, chocolate, cream",
+"items": "30ml green crème de menthe | 30ml white crème de cacao | 30ml cream",
+"method": "Shake hard with ice and strain into a chilled coupe."
+},
+{
+"name": "Hurricane",
+"country": "USA",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#F08A3E",
+"colour": "#A93245",
+"flavour": "Two rums, passionfruit, orange",
+"items": "45ml white rum | 45ml dark rum | 30ml passionfruit pulp | 30ml orange juice | 15ml lime juice | 15ml sugar syrup | 5ml grenadine",
+"method": "Shake everything with ice and pour into a tall glass with fresh ice."
+},
+{
+"name": "Cuba Libre",
+"country": "Cuba",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#5A2E1E",
+"colour": "#2E8B76",
+"flavour": "Rum, cola, lime",
+"items": "50ml white rum | 120ml cola | 10ml lime juice | Lime wedge",
+"method": "Fill a tall glass with ice, add the rum and lime, top with cola and add the wedge."
+},
+{
+"name": "Mai Tai",
+"country": "USA",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#E8A050",
+"colour": "#3B4E7A",
+"flavour": "Rum, almond, lime",
+"items": "30ml white rum | 30ml dark rum | 15ml triple sec | 25ml lime juice | 15ml orgeat syrup | Mint sprig",
+"method": "Shake everything with ice, strain over crushed ice and add the mint."
+},
+{
+"name": "Tom Collins",
+"country": "Home",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#EEF0D0",
+"colour": "#2D5F9A",
+"flavour": "Gin, lemon, bubbles",
+"items": "50ml gin | 25ml lemon juice | 15ml sugar syrup | Soda to top",
+"method": "Shake the gin, lemon and syrup with ice, strain into a tall glass of ice and top with soda."
+},
+{
+"name": "Bramble",
+"country": "England",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#6A2B55",
+"colour": "#B5452C",
+"flavour": "Gin, blackberry, lemon",
+"items": "50ml gin | 25ml lemon juice | 10ml sugar syrup | 15ml blackberry liqueur | Blackberries",
+"method": "Shake the gin, lemon and syrup with ice, strain over crushed ice, drizzle the blackberry liqueur on top and add the berries."
+},
+{
+"name": "Passion Fruit Martini",
+"country": "England",
+"type": "cocktail",
+"glass": "martini",
+"tint": "#F2B33D",
+"colour": "#2E8556",
+"flavour": "Passionfruit, vanilla, lime",
+"items": "45ml vanilla vodka | 30ml passionfruit pulp | 15ml lime juice | 15ml sugar syrup | Prosecco on the side (optional)",
+"method": "Shake hard with ice and strain into a chilled glass. Serve with a little prosecco on the side."
+},
+{
+"name": "Bellini",
+"country": "Italy",
+"type": "cocktail",
+"glass": "flute",
+"tint": "#F6C9A8",
+"colour": "#7A62A6",
+"flavour": "Peach, bubbles",
+"items": "50ml peach puree | 100ml prosecco",
+"method": "Pour the peach puree into a flute and top slowly with prosecco, stirring gently."
+},
+{
+"name": "Mimosa",
+"country": "Home",
+"type": "cocktail",
+"glass": "flute",
+"tint": "#F5B53D",
+"colour": "#C79A12",
+"flavour": "Orange, bubbles",
+"items": "75ml orange juice | 75ml prosecco",
+"method": "Pour the orange juice into a flute and top with prosecco."
+},
+{
+"name": "Sea Breeze",
+"country": "USA",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#E86A86",
+"colour": "#A93245",
+"flavour": "Cranberry, grapefruit, vodka",
+"items": "45ml vodka | 90ml cranberry juice | 30ml grapefruit juice | Lime wedge",
+"method": "Fill a tall glass with ice, add everything and stir."
+},
+{
+"name": "Gin and Tonic",
+"country": "England",
+"type": "cocktail",
+"glass": "wine",
+"tint": "#E6F0EC",
+"colour": "#2E8B76",
+"flavour": "Gin, tonic, lime",
+"items": "50ml gin | 150ml tonic water | Lime wedge",
+"method": "Fill a large glass with ice, add the gin, top with tonic and add the lime."
+},
+{
+"name": "Blue Lagoon",
+"country": "France",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#2E8BC9",
+"colour": "#3B4E7A",
+"flavour": "Vodka, blue curaçao, lemonade",
+"items": "30ml vodka | 30ml blue curaçao | 120ml lemonade | Lemon slice",
+"method": "Fill a tall glass with ice, add the vodka and curaçao, then top with lemonade."
+},
+{
+"name": "Virgin Mary",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#B3262A",
+"colour": "#2D5F9A",
+"flavour": "Tomato, spice, lemon",
+"items": "120ml tomato juice | 15ml lemon juice | 3 dashes Worcestershire sauce | 2 dashes hot sauce | Pinch of celery salt and black pepper | Celery stick",
+"method": "Stir everything with ice in a tall glass and add the celery stick."
+},
+{
+"name": "Virgin Watermelon Margarita",
+"country": "Home",
+"type": "mocktail",
+"glass": "rocks",
+"tint": "#F07A80",
+"colour": "#B5452C",
+"flavour": "Watermelon, lime, salt",
+"items": "120ml watermelon juice | 20ml lime juice | 10ml agave syrup | Splash of soda | Salt rim",
+"method": "Salt the rim, shake the juices and agave with ice, strain over fresh ice and add the soda."
+},
+{
+"name": "Ginger Mule",
+"country": "Home",
+"type": "mocktail",
+"glass": "mug",
+"tint": "#E6D9A0",
+"colour": "#2E8556",
+"flavour": "Ginger, lime, mint",
+"items": "20ml lime juice | 150ml ginger beer | Mint sprig",
+"method": "Fill a mug with ice, add the lime, top with ginger beer and add the mint."
+},
+{
+"name": "Strawberry Lemonade",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F2A0A8",
+"colour": "#7A62A6",
+"flavour": "Strawberry, lemon, bubbles",
+"items": "4 strawberries | 25ml lemon juice | 15ml sugar syrup | 150ml soda",
+"method": "Mash the strawberries with the lemon and syrup, add ice and top with soda."
+},
+{
+"name": "Cucumber Mint Cooler",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#CFE8C8",
+"colour": "#C79A12",
+"flavour": "Cucumber, mint, lime",
+"items": "4 cucumber rounds | 8 mint leaves | 20ml lime juice | 15ml sugar syrup | 120ml soda",
+"method": "Gently press the cucumber and mint with the lime and syrup, add ice and top with soda."
+},
+{
+"name": "Raspberry Lime Rickey",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#E0566A",
+"colour": "#A93245",
+"flavour": "Raspberry, lime, bubbles",
+"items": "8 raspberries | 25ml lime juice | 15ml sugar syrup | 150ml soda",
+"method": "Mash the raspberries with the lime and syrup, add ice and top with soda."
+},
+{
+"name": "Virgin Bellini",
+"country": "Home",
+"type": "mocktail",
+"glass": "flute",
+"tint": "#F6C9A8",
+"colour": "#2E8B76",
+"flavour": "Peach, bubbles",
+"items": "50ml peach puree | 100ml sparkling grape juice",
+"method": "Pour the peach puree into a flute and top slowly with sparkling grape juice."
+},
+{
+"name": "Elderflower Spritz",
+"country": "Home",
+"type": "mocktail",
+"glass": "wine",
+"tint": "#EEF0D0",
+"colour": "#3B4E7A",
+"flavour": "Elderflower, bubbles",
+"items": "25ml elderflower cordial | 120ml soda | Cucumber ribbon and lemon slice (optional)",
+"method": "Fill a wine glass with ice, add the cordial, top with soda and add the cucumber and lemon."
+},
+{
+"name": "Peach Iced Tea",
+"country": "Home",
+"type": "mocktail",
+"glass": "rocks",
+"tint": "#E8823A",
+"colour": "#2D5F9A",
+"flavour": "Peach, black tea, lemon",
+"items": "150ml black tea, cooled | 50ml peach nectar | 10ml lemon juice | 10ml sugar syrup | Peach and orange slices",
+"method": "Stir everything together and pour over plenty of ice with the fruit."
+},
+{
+"name": "Sparkling Lemon Highball",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F2EDB8",
+"colour": "#B5452C",
+"flavour": "Lemon, honey, bubbles",
+"items": "30ml lemon juice | 20ml honey | 150ml soda | Lemon peel",
+"method": "Stir the lemon and honey together in a tall glass, fill with ice and top with soda."
+},
+{
+"name": "Tropical Sunrise",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F08A3E",
+"colour": "#2E8556",
+"flavour": "Orange, pineapple, grenadine",
+"items": "120ml orange juice | 60ml pineapple juice | 15ml grenadine",
+"method": "Fill a tall glass with ice, add the juices, then pour the grenadine down the side so it sinks."
+},
+{
+"name": "Virgin Sea Breeze",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#E86A86",
+"colour": "#7A62A6",
+"flavour": "Cranberry, grapefruit",
+"items": "120ml cranberry juice | 60ml grapefruit juice | Lime wedge",
+"method": "Fill a tall glass with ice, add the juices and stir."
+},
+{
+"name": "Pineapple Ginger Fizz",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F2D86A",
+"colour": "#C79A12",
+"flavour": "Pineapple, ginger, lime",
+"items": "90ml pineapple juice | 15ml lime juice | 100ml ginger beer",
+"method": "Fill a glass with ice, add the pineapple and lime, then top with ginger beer."
+},
+{
+"name": "Passionfruit Nojito",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F5C04A",
+"colour": "#A93245",
+"flavour": "Passionfruit, mint, lime",
+"items": "30ml passionfruit pulp | 20ml lime juice | 15ml sugar syrup | 8 mint leaves | 120ml soda",
+"method": "Gently press the mint with the lime and syrup, add the passionfruit and crushed ice, then top with soda."
+},
+{
+"name": "Blueberry Basil Smash",
+"country": "Home",
+"type": "mocktail",
+"glass": "rocks",
+"tint": "#5B4A9E",
+"colour": "#2E8B76",
+"flavour": "Blueberry, basil, lemon",
+"items": "10 blueberries | 4 basil leaves | 20ml lemon juice | 15ml sugar syrup | 100ml soda",
+"method": "Mash the blueberries and basil with the lemon and syrup, add ice and top with soda."
+},
+{
+"name": "Cherry Limeade",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#C4364A",
+"colour": "#3B4E7A",
+"flavour": "Cherry, lime, lemonade",
+"items": "30ml cherry juice | 20ml lime juice | 10ml sugar syrup | 150ml lemonade | Maraschino cherry",
+"method": "Fill a glass with ice, add the cherry, lime and syrup, top with lemonade and add the cherry."
+},
+{
+"name": "Grapefruit Rosemary Spritz",
+"country": "Home",
+"type": "mocktail",
+"glass": "wine",
+"tint": "#F4A3A0",
+"colour": "#2D5F9A",
+"flavour": "Grapefruit, rosemary, bubbles",
+"items": "90ml grapefruit juice | 15ml rosemary syrup | 100ml soda | Rosemary sprig",
+"method": "Fill a wine glass with ice, add the grapefruit and syrup, top with soda and add the rosemary. For the syrup, simmer sugar syrup with a rosemary sprig for 5 minutes."
+},
+{
+"name": "Iced Matcha Lemonade",
+"country": "Japan",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#B9D98A",
+"colour": "#B5452C",
+"flavour": "Matcha, lemon",
+"items": "1 tsp matcha powder | 30ml hot water | 120ml lemonade | 15ml lemon juice | Ice",
+"method": "Whisk the matcha into the hot water until smooth. Fill a glass with ice and lemonade, add the lemon, then pour the matcha over the top."
+},
+{
+"name": "Coconut Lime Cooler",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#EEF3DD",
+"colour": "#2E8556",
+"flavour": "Coconut water, lime, mint",
+"items": "60ml coconut water | 20ml lime juice | 15ml sugar syrup | 100ml soda | Mint sprig",
+"method": "Fill a glass with ice, add the coconut water, lime and syrup, top with soda and add the mint."
+},
+{
+"name": "Apple Ginger Spritz",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#DDB15A",
+"colour": "#7A62A6",
+"flavour": "Apple, ginger, lemon",
+"items": "100ml apple juice | 15ml lemon juice | 100ml ginger ale | Apple slice",
+"method": "Fill a glass with ice, add the apple and lemon, then top with ginger ale."
+},
+{
+"name": "Hibiscus Lemonade",
+"country": "Home",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#B0244A",
+"colour": "#C79A12",
+"flavour": "Hibiscus, lemon",
+"items": "100ml hibiscus tea, cooled | 25ml lemon juice | 15ml sugar syrup | 50ml soda",
+"method": "Stir the tea, lemon and syrup over ice and top with soda."
+}
+];
+/* 25 Days of Christmas, from the ADVENT section of the 80 Sips master list. These live only behind the doors. */
+const XMAS = [
+{
+"name": "Rudolph's Red Nose",
+"country": "Lapland",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#A5182A",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Cherry, cranberry, lime",
+"items": "25ml cherry rum | 100ml cranberry juice | 10ml lime juice | 90ml lemonade | Maraschino cherry",
+"method": "Fill a tall glass with ice. Add the rum, cranberry and lime, stir, then top with lemonade. Put the cherry on a toothpick across the rim as Rudolph's nose.",
+"twin": {
+"flavour": "Cherry, cranberry, lime",
+"items": "25ml cherry juice | 100ml cranberry juice | 10ml lime juice | 90ml lemonade | Maraschino cherry",
+"method": "Tall glass with ice. Add the cherry juice, cranberry and lime, stir, then top with lemonade. Cherry on a toothpick as the nose."
+}
+},
+{
+"name": "Candy Cane Martini",
+"country": "USA",
+"type": "cocktail",
+"glass": "martini",
+"tint": "#E7C9C4",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Peppermint, Irish cream",
+"items": "20ml vodka | 20ml Irish cream | 15ml candy cane syrup | 30ml milk | Crushed candy cane rim",
+"method": "Wet the rim of a martini glass with syrup and dip it in crushed candy cane. Shake the liquids hard with ice, then strain into the glass.",
+"twin": {
+"flavour": "Peppermint, white chocolate",
+"items": "60ml milk | 20ml white chocolate syrup | 15ml candy cane syrup | 30ml cream | Crushed candy cane rim",
+"method": "Shake with ice and strain into a coupe with a candy cane rim."
+}
+},
+{
+"name": "Grumpy Elf Appletini",
+"country": "USA",
+"type": "cocktail",
+"glass": "martini",
+"tint": "#86B83B",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Sour apple, lemon",
+"items": "15ml vodka | 30ml apple sours | 15ml lemon juice | Apple slice",
+"method": "Shake everything with ice and strain into a chilled martini glass. Add the apple slice, cut into a little elf hat if you like.",
+"twin": {
+"flavour": "Sour apple, vanilla",
+"items": "60ml apple juice | 15ml lemon juice | 15ml vanilla syrup | Splash of soda",
+"method": "Shake the juice, lemon and syrup hard with ice, strain into a martini glass and add a splash of soda."
+}
+},
+{
+"name": "White Christmas Russian",
+"country": "Russia",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#C9A987",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Coffee, cream, coconut",
+"items": "20ml vodka | 20ml coffee liqueur | 30ml cream | 30ml milk | Desiccated coconut rim",
+"method": "Wet the rim of a short glass and dip it in coconut for a snowy edge. Fill with ice, add the vodka and coffee liqueur, then slowly pour the cream and milk over the top.",
+"twin": {
+"flavour": "Coffee, coconut, cream",
+"items": "40ml cold strong coffee | 10ml sugar syrup | 30ml coconut cream | 60ml milk",
+"method": "Old fashioned glass with ice. Add the coffee and syrup, top with coconut cream and milk, stir."
+}
+},
+{
+"name": "Santa Suit Spritz",
+"country": "Italy",
+"type": "cocktail",
+"glass": "wine",
+"tint": "#E8682A",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Aperol, orange, bubbles",
+"items": "45ml Aperol | 60ml prosecco | 60ml soda water | Orange slice",
+"method": "Fill a large wine glass with ice. Pour in the prosecco, then the Aperol, then the soda. Stir once and add the orange slice.",
+"twin": {
+"flavour": "Orange, pomegranate, bubbles",
+"items": "40ml pomegranate juice | 20ml orange juice | 100ml sparkling grape juice | Soda to top | Orange slice",
+"method": "Wine glass with ice. Add the pomegranate and orange, top with sparkling grape juice and soda."
+}
+},
+{
+"name": "Snowman Colada",
+"country": "Puerto Rico",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#EFE6CF",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Coconut, pineapple",
+"items": "45ml Malibu | 30ml coconut cream | 120ml pineapple juice | 1 cup ice | Desiccated coconut",
+"method": "Blend everything except the desiccated coconut until smooth and slushy. Pour into a glass and sprinkle the coconut on top like snow.",
+"twin": {
+"flavour": "Coconut, pineapple, white chocolate",
+"items": "90ml pineapple juice | 40ml coconut cream | 10ml white chocolate syrup",
+"method": "Blend with ice until slushy, pour, and add coconut flake snow."
+}
+},
+{
+"name": "Mistletoe Mule",
+"country": "USA",
+"type": "cocktail",
+"glass": "mug",
+"tint": "#D6C565",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Apple, ginger, lime",
+"items": "15ml vodka | 30ml apple sours | 15ml lime juice | 150ml ginger beer | Mint sprig and 3 cranberries",
+"method": "Fill a glass with ice. Add the vodka, apple sours and lime, then top with ginger beer. Stir gently and garnish with the mint and cranberries so it looks like mistletoe.",
+"twin": {
+"flavour": "Ginger, cranberry, lime",
+"items": "120ml ginger beer | 40ml cranberry juice | 15ml lime juice | Mint sprig",
+"method": "Copper mug with ice. Add the cranberry and lime, top with ginger beer and add the mint."
+}
+},
+{
+"name": "Gingerbread Man Martini",
+"country": "Sweden",
+"type": "cocktail",
+"glass": "coupe",
+"tint": "#B98A58",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Ginger, cinnamon, Irish cream",
+"items": "20ml vanilla rum | 20ml Irish cream | 30ml milk | 10ml sugar syrup | Pinch of ground ginger and cinnamon | Gingernut biscuit",
+"method": "Shake everything except the biscuit with ice and strain into a martini glass. Serve the gingernut on the side for dunking.",
+"twin": {
+"flavour": "Gingerbread, caramel",
+"items": "90ml milk | 20ml gingerbread syrup | 10ml caramel syrup | Gingerbread cookie",
+"method": "Shake with ice, strain into a coupe and put the cookie on the side."
+}
+},
+{
+"name": "Pavlova Martini",
+"country": "New Zealand",
+"type": "cocktail",
+"glass": "coupe",
+"tint": "#F2E3B5",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Passionfruit, vanilla, meringue",
+"items": "25ml vanilla rum | 30ml cream | 15ml passionfruit pulp | 10ml sugar syrup | Crushed meringue and a strawberry slice",
+"method": "Shake the liquids and pulp hard with ice, then strain into a martini glass. Top with crushed meringue and the strawberry just before serving.",
+"twin": {
+"flavour": "Passionfruit, vanilla, meringue",
+"items": "40ml milk | 20ml passionfruit pulp | 15ml sugar syrup | 20ml cream | 2 drops vanilla essence | Crushed meringue rim",
+"method": "Shake everything with ice and strain into a glass with a meringue rim."
+}
+},
+{
+"name": "Jandals and Tinsel",
+"country": "New Zealand",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#EE9A3A",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Gin, Aperol, L&P",
+"items": "15ml gin | 30ml Aperol | 150ml L&P | Lemon wedge and mint sprig",
+"method": "Fill a tall glass with ice. Add the gin and Aperol, top with L&P and stir gently. Garnish with the lemon and mint.",
+"twin": {
+"flavour": "L&P, orange, lemon",
+"items": "150ml L&P | 30ml orange juice | 5ml grenadine | Lemon wedge, mint",
+"method": "Tall glass with ice. Add the orange and grenadine, then top with L&P."
+}
+},
+{
+"name": "Poinsettia Sparkler",
+"country": "Mexico",
+"type": "cocktail",
+"glass": "flute",
+"tint": "#D8486A",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Cranberry, Aperol, bubbles",
+"items": "15ml Aperol | 60ml cranberry juice | 75ml prosecco | 3 cranberries",
+"method": "Pour the Aperol and cranberry juice into a flute. Top slowly with prosecco and drop in the cranberries.",
+"twin": {
+"flavour": "Cranberry, orange, bubbles",
+"items": "20ml orange juice | 40ml cranberry juice | 90ml sparkling grape juice",
+"method": "Flute. Add the orange and cranberry, then top slowly with sparkling grape juice."
+}
+},
+{
+"name": "Black Forest Christmas",
+"country": "Germany",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#6B2B33",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Cherry, chocolate, cream",
+"items": "20ml cherry rum | 20ml chocolate liqueur | 30ml cream | 30ml milk | Maraschino cherry",
+"method": "Shake the liquids hard with ice and strain into a martini glass. Drop in the cherry.",
+"twin": {
+"flavour": "Cherry, chocolate",
+"items": "50ml cherry juice | 20ml chocolate syrup | 60ml milk | Grated chocolate",
+"method": "Shake with ice, strain over ice and top with grated chocolate."
+}
+},
+{
+"name": "Christmas Star",
+"country": "Italy",
+"type": "cocktail",
+"glass": "flute",
+"tint": "#F0A63C",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Aperol, orange, bubbles",
+"items": "15ml Aperol | 30ml orange juice | 90ml prosecco | Star-shaped orange peel",
+"method": "Pour the Aperol and juice into a flute and top slowly with prosecco. Cut the peel into a star, float it on top and toast to making it through all 25.",
+"twin": {
+"flavour": "Orange, bubbles",
+"items": "60ml orange juice | 5ml grenadine | 90ml sparkling grape juice | Star orange peel",
+"method": "Flute. Add the orange and grenadine, top with sparkling grape juice and float the star peel."
+}
+},
+{
+"name": "Milk and Cookies for Santa",
+"country": "USA",
+"type": "cocktail",
+"glass": "rocks",
+"tint": "#D9C2A3",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Irish cream, chocolate, cookies",
+"items": "15ml vanilla rum | 20ml Irish cream | 15ml chocolate liqueur | 90ml milk | Chocolate sauce and cookie crumb rim",
+"method": "Dip the rim of a short glass in chocolate sauce, then cookie crumbs. Shake the liquids with ice and strain into the glass. Leave a cookie beside it for Santa.",
+"twin": {
+"flavour": "Milk, chocolate, caramel",
+"items": "120ml milk | 15ml chocolate syrup | 10ml caramel syrup | 2 drops vanilla essence | Cookie crumbs rim",
+"method": "Dip a chocolate sauce rim in cookie crumbs, shake the rest with ice and strain into the glass."
+}
+},
+{
+"name": "Apple Crumble Highball",
+"country": "England",
+"type": "cocktail",
+"glass": "tall",
+"tint": "#DDB15A",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Apple, cinnamon, lemon",
+"items": "15ml vanilla rum | 30ml apple sours | 120ml apple juice | 10ml lemon juice | Cinnamon and sugar rim",
+"method": "Wet the rim of a tall glass and dip it in cinnamon sugar. Fill with ice, add everything else and stir.",
+"twin": {
+"flavour": "Apple, cinnamon, caramel",
+"items": "120ml apple juice | 10ml caramel syrup | Pinch of cinnamon | Splash of ginger ale | Apple slice",
+"method": "Highball with ice. Add the apple and caramel, stir, top with ginger ale, then add the cinnamon and apple slice."
+}
+},
+{
+"name": "Rudolph's Nose Fizz",
+"country": "Lapland",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#C4364A",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Cranberry, lemonade, cherry",
+"items": "100ml cranberry juice | 100ml lemonade | Maraschino cherry | Ice",
+"method": "Glass ice, cranberry, top lemonade, cherry nose."
+},
+{
+"name": "Little Snowman Slushie",
+"country": "Antarctica",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#EFE6CF",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Pineapple, coconut",
+"items": "120ml pineapple juice | 30ml coconut cream | 1 cup ice | Desiccated coconut",
+"method": "Blend juice coconut ice until slushy, coconut snow on top."
+},
+{
+"name": "Elf Juice",
+"country": "North Pole",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#C3D65A",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Apple, lime, mint",
+"items": "100ml apple juice | 100ml lemonade | 10ml lime juice | Mint sprig | Ice",
+"method": "Glass ice, apple + lime, top lemonade, mint."
+},
+{
+"name": "Candy Cane Shake",
+"country": "USA",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F2C7CF",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Peppermint, vanilla",
+"items": "200ml milk | 2 scoops vanilla ice cream | 10ml candy cane syrup | Crushed candy cane",
+"method": "Blend milk ice cream syrup, crushed cane top."
+},
+{
+"name": "Reindeer Cocoa",
+"country": "Finland",
+"type": "mocktail",
+"glass": "mug",
+"tint": "#6B3A26",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Hot chocolate, cream",
+"items": "200ml hot chocolate made with milk | Whipped cream | Gingernut biscuit",
+"method": "Make hot choc, cool slightly, top cream, biscuit for dunking."
+},
+{
+"name": "Mini Mojito",
+"country": "Cuba",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#D7E8DC",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Mint, lime, bubbles",
+"items": "15ml lime juice | 10ml sugar syrup | 6 mint leaves | 120ml soda water | Crushed ice",
+"method": "Press mint with lime syrup, fill crushed ice, top soda."
+},
+{
+"name": "Santa's Sunset",
+"country": "Hawaii",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#EE8A3A",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Orange, cranberry",
+"items": "100ml orange juice | 80ml lemonade | 20ml cranberry juice | Orange slice | Ice",
+"method": "Glass ice, orange + lemonade, slowly pour cranberry so it sinks like sunset."
+},
+{
+"name": "Strawberry Snowstorm",
+"country": "England",
+"type": "mocktail",
+"glass": "coupe",
+"tint": "#E0566A",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "Strawberry, apple",
+"items": "100g frozen strawberries | 100ml apple juice | 1/2 cup ice | Whipped cream",
+"method": "Blend berries apple ice, swirl cream top."
+},
+{
+"name": "Pavlova Shake",
+"country": "New Zealand",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F2E3B5",
+"colour": "#1F5A3A",
+"xmas": true,
+"flavour": "Passionfruit, meringue",
+"items": "150ml milk | 1 scoop vanilla ice cream | 15ml passionfruit pulp | Crushed meringue",
+"method": "Blend milk ice cream passionfruit, crushed meringue top."
+},
+{
+"name": "Jandal Juice",
+"country": "New Zealand",
+"type": "mocktail",
+"glass": "tall",
+"tint": "#F2C14A",
+"colour": "#9B1C2E",
+"xmas": true,
+"flavour": "L&P, orange, lemon",
+"items": "150ml L&P | 50ml orange juice | Ice | Lemon wedge",
+"method": "Tall glass ice, orange, top L&P, lemon."
+}
+];
+
+
+const STEM = '<path d="M100 120V200M58 206Q100 192 142 206"/>';
+const GLASSES = {
+  martini: t => `<path d="M48 50H152L100 112Z" fill="${t}" stroke="none"/><path d="M28 30H172L100 120Z"/>${STEM}`,
+  coupe: t => `<path d="M44 62H156C150 98 126 110 100 110S50 98 44 62Z" fill="${t}" stroke="none"/><path d="M36 38H164C164 100 130 120 100 120S36 100 36 38Z"/>${STEM}`,
+  rocks: t => `<path d="M47 105H153L146 196H54Z" fill="${t}" stroke="none"/><path d="M44 70H156L148 204H52Z"/>`,
+  tall: t => `<path d="M62 56H138L131 200H69Z" fill="${t}" stroke="none"/><path d="M60 14H140L132 206H68Z"/>`,
+  flute: t => `<path d="M75 40H125L116 106Q100 120 84 106Z" fill="${t}" stroke="none"/><path d="M72 12H128L118 110Q100 128 82 110Z"/>${STEM}`,
+  wine: t => `<path d="M53 58H147C146 92 128 110 100 110S54 92 53 58Z" fill="${t}" stroke="none"/><path d="M56 18H144C152 80 130 120 100 120S48 80 56 18Z"/>${STEM}`,
+  mug: t => `<path d="M46 84H134V178Q134 198 114 198H66Q46 198 46 178Z" fill="${t}" stroke="none"/><path d="M40 60H140V180Q140 206 116 206H64Q40 206 40 180ZM140 90H156Q176 90 176 118T156 150H140"/>`,
+};
+const glassSvg = (d, cls) => `<svg class="${cls}" viewBox="0 0 200 212" fill="none" stroke="#FBF6E8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLASSES[d.glass](d.tint)}</svg>`;
+
+/* Photo names: photos/place-japan.jpg for the country, photos/drink-tokyo-yuzu-fizz.jpg for the drink. */
+const slug = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const placePhoto = d => `photos/place-${slug(d.country)}.jpg`;
+const drinkPhoto = d => d.photo || `photos/drink-${slug(d.name)}.jpg`;
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+
+function postmark(city) {
+  const id = "pm" + Math.random().toString(36).slice(2, 8);
+  return `<svg class="postmark" viewBox="0 0 160 100" aria-hidden="true" fill="none" stroke="#5A4A2E" stroke-opacity=".7" stroke-width="2">
+    <circle cx="50" cy="50" r="40"/><circle cx="50" cy="50" r="27"/>
+    <path id="${id}" d="M18 50A32 32 0 0 1 82 50"/>
+    <text font-family="Cinzel, Georgia, serif" font-size="10" font-weight="700" fill="#5A4A2E" fill-opacity=".8" stroke="none" letter-spacing="1"><textPath href="#${id}" startOffset="50%" text-anchor="middle">${esc(city.toUpperCase())}</textPath></text>
+    <text x="50" y="55" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="9" font-weight="700" fill="#5A4A2E" fill-opacity=".8" stroke="none">AIR MAIL</text>
+    <path d="M94 34C104 28 114 40 124 34S144 40 156 34M94 50C104 44 114 56 124 50S144 56 156 50M94 66C104 60 114 72 124 66S144 72 156 66"/>
+  </svg>`;
+}
+
+function postcardHtml(d) {
+  const [city, , , colour] = PLACES[d.country] || [d.country, 0, 0, d.colour];
+  const recipe = d.items
+    ? `<p class="flav">${esc(d.flavour)}</p>
+       <ul>${d.items.split("|").map(i => `<li>${esc(i.trim())}</li>`).join("")}</ul>
+       <p>${esc(d.method)}</p>`
+    : `<p class="soon">Recipe coming soon. This postcard is still on its way.</p>`;
+  return `<article class="post" style="--c:${colour}"><div class="inner">
+    <button class="face front" type="button" aria-label="${esc(d.name)} from ${esc(d.country)}. Flip for the recipe.">
+      <img class="bgphoto" src="${placePhoto(d)}" alt="" onerror="this.parentNode.classList.add('no-place');this.remove()">
+      <span class="tint"></span>
+      <span class="greet">${d.xmas ? "Season's greetings from" : d.country === "Home" ? "Made at" : "Greetings from"}</span>
+      <span class="country" style="--len:${Math.max(d.country.length, 5)}">${esc(d.country)}</span>
+      ${glassSvg(d, "glass")}
+      <span class="polaroid"><img src="${drinkPhoto(d)}" alt="${esc(d.name)}" onerror="this.closest('.front').classList.add('no-drink')"></span>
+      <span class="dname"><em>${esc(d.name)}</em><span class="type">${d.type === "cocktail" ? "Cocktail" : "Mocktail"}</span></span>
+    </button>
+    <div class="face back">
+      <div class="recipe"><h3>${esc(d.name)}</h3>${recipe}</div>
+      <div class="side">
+        <div class="stamp">${esc(d.country)}${glassSvg(d, "")}<span>80 Sips</span>${postmark(city)}</div>
+        <div class="lines"><span>To: a thirsty traveller</span><span>${esc(city)}, ${esc(d.country)}</span></div>
+      </div>
+      <button class="flip" type="button">Flip back</button>
+    </div>
+  </div></article>`;
+}
+
+const rack = document.getElementById("rack");
+let filter = "all";
+let view = "world";
+function drawRack() {
+  const group = view === "classics" ? "classic" : "world";
+  rack.innerHTML = DRINKS.filter(d => (d.group || "world") === group && (filter === "all" || d.type === filter))
+    .sort((a, b) => group === "world" ? a.country.localeCompare(b.country) || a.type.localeCompare(b.type) : 0)
+    .map(postcardHtml).join("");
+}
+document.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => {
+  filter = b.dataset.f;
+  document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  drawRack();
+}));
+document.addEventListener("click", e => {
+  const card = e.target.closest(".inner");
+  if (card) card.classList.toggle("flipped");
+});
+
+const countries = Object.keys(PLACES).filter(c => DRINKS.some(d => d.country === c));
+const ready = DRINKS.filter(d => d.items).length;
+const SIPS = DRINKS.length;
+document.getElementById("tally").textContent = `${Math.min(SIPS, 80)} of 80 sips so far · ${countries.length} countries · plus 25 for Christmas`;
+document.getElementById("progressBar").style.width = Math.min(100, SIPS / 80 * 100) + "%";
+
+const atlas = document.getElementById("atlas");
+const atlasLayer = document.getElementById("atlasLayer");
+const EUROPE = c => { const [, x, y] = PLACES[c]; return x >= 525 && x <= 665 && y >= 165 && y <= 270; };
+const zoomBtn = document.getElementById("zoomBtn");
+function setZoom(on) {
+  atlas.classList.toggle("zoomed", on);
+  zoomBtn.setAttribute("aria-pressed", String(on));
+  zoomBtn.querySelector("span").textContent = on ? "Back to the whole world" : "Zoom into Europe";
+  const sc = atlas.parentElement;
+  if (on && sc.scrollWidth > sc.clientWidth) sc.scrollLeft = atlas.offsetWidth * 0.43 - sc.clientWidth / 2;
+}
+zoomBtn.addEventListener("click", () => setZoom(!atlas.classList.contains("zoomed")));
+const PIN = '<svg viewBox="0 0 30 40" aria-hidden="true"><path d="M15 39C15 39 2 23 2 14A13 13 0 0 1 28 14C28 23 15 39 15 39Z" fill="#C9A23E" stroke="#0D2B2C" stroke-width="2"/><circle cx="15" cy="14" r="5" fill="#0D2B2C"/></svg>';
+countries.forEach(c => {
+  const [city, x, y] = PLACES[c];
+  const n = DRINKS.filter(d => d.country === c).length;
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "pin"; b.dataset.country = c;
+  b.style.left = (x / 12) + "%"; b.style.top = (y / 6) + "%";
+  b.setAttribute("aria-label", `${c}: ${n} ${n === 1 ? "drink" : "drinks"}`);
+  b.innerHTML = PIN + `<span class="tip">${esc(c)}</span>`;
+  b.addEventListener("click", () => {
+    if (EUROPE(c) && !atlas.classList.contains("zoomed") && matchMedia("(pointer: coarse)").matches) { setZoom(true); return; }
+    openCountry(c);
+  });
+  atlasLayer.appendChild(b);
+});
+
+const dlg = document.getElementById("dlg");
+function openCountry(c) {
+  document.getElementById("dlgTitle").textContent = c;
+  document.getElementById("dlgCards").innerHTML = DRINKS.filter(d => d.country === c)
+    .sort((a, b) => (a.group ? 1 : 0) - (b.group ? 1 : 0) || a.type.localeCompare(b.type)).map(postcardHtml).join("");
+  dlg.classList.toggle("wide", DRINKS.filter(d => d.country === c).length > 1);
+  visited.add(c);
+  store.set("visited", JSON.stringify([...visited]));
+  markPins();
+  dlg.showModal();
+}
+document.getElementById("closeDlg").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener("close", () => dlg.classList.remove("wide"));
+
+/* Christmas doors: a fixed mystery order, the same for everyone. Santa's drink is always on the 24th and the Christmas Star on the 25th. */
+const XMAS_ORDER = (() => {
+  let s = 20261201;
+  const rand = () => { s = s * 48271 % 2147483647; return s / 2147483647; };
+  const fixed = ["Milk and Cookies for Santa", "Christmas Star"];
+  const rest = XMAS.filter(d => !fixed.includes(d.name));
+  for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+  return rest.concat(fixed.map(n => XMAS.find(d => d.name === n)));
+})();
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+};
+let visited;
+try { visited = new Set(JSON.parse(store.get("visited")) || []); } catch (e) { visited = new Set(); }
+function markPins() {
+  document.querySelectorAll(".pin").forEach(p => p.classList.toggle("seen", visited.has(p.dataset.country)));
+  const total = document.querySelectorAll(".pin").length;
+  document.getElementById("visitedCount").textContent = visited.size ? `You've visited ${[...visited].filter(c => PLACES[c]).length} of ${total} countries.` : "";
+}
+let opened;
+try { opened = new Set(JSON.parse(store.get("xmas-opened")) || []); } catch (e) { opened = new Set(); }
+function nzToday() {
+  const p = {};
+  new Intl.DateTimeFormat("en-NZ", { timeZone: "Pacific/Auckland", year: "numeric", month: "numeric", day: "numeric" })
+    .formatToParts(new Date()).forEach(x => { p[x.type] = Number(x.value); });
+  return Date.UTC(p.year, p.month - 1, p.day);
+}
+const canOpen = n => nzToday() >= Date.UTC(2026, 11, n);
+const doors = document.getElementById("doors");
+const xmasStatus = document.getElementById("xmasStatus");
+function drawDoors() {
+  doors.innerHTML = XMAS_ORDER.map((d, i) => {
+    const n = i + 1;
+    const isOpen = opened.has(n) && canOpen(n);
+    return `<button class="door${isOpen ? " open" : ""}${canOpen(n) ? "" : " locked"}" type="button" data-day="${n}"
+      aria-label="${n} December${isOpen ? ": " + esc(d.name) : canOpen(n) ? ", ready to open" : ", opens on " + n + " December"}">
+      <span class="num">${n}</span><span class="what">${isOpen ? esc(d.name) : canOpen(n) ? "Open me" : "Opens " + n + " Dec"}</span></button>`;
+  }).join("");
+}
+doors.addEventListener("click", e => {
+  const b = e.target.closest(".door");
+  if (!b) return;
+  const n = Number(b.dataset.day);
+  if (!canOpen(n)) { xmasStatus.textContent = `No peeking. Door ${n} opens on ${n} December.`; return; }
+  xmasStatus.textContent = "";
+  opened.add(n);
+  store.set("xmas-opened", JSON.stringify([...opened]));
+  drawDoors();
+  document.getElementById("dlgTitle").textContent = n + " December";
+  const d = XMAS_ORDER[n - 1];
+  const cards = [d];
+  if (d.twin) cards.push({ ...d, ...d.twin, name: d.name + " Mocktail", type: "mocktail", photo: drinkPhoto(d) });
+  document.getElementById("dlgCards").innerHTML = cards.map(postcardHtml).join("");
+  dlg.showModal();
+});
+
+let routed = false;
+function route() {
+  const h = location.hash.slice(1);
+  view = ["christmas", "mix", "about", "reviews", "instagram"].includes(h) ? h : "world";
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-current", String(t.getAttribute("href") === "#" + view)));
+  const xmas = view === "christmas";
+  document.body.classList.toggle("xmas-mode", xmas);
+  document.querySelector("header").hidden = xmas;
+  if (routed) window.scrollTo(0, 0);
+  routed = true;
+  document.body.classList.toggle("not-world", view !== "world");
+  document.getElementById("atlasSection").hidden = view !== "world";
+  const mixing = view === "mix";
+  document.getElementById("xmas").hidden = !xmas;
+  document.getElementById("mix").hidden = !mixing;
+  document.getElementById("rack").hidden = true;
+  document.getElementById("typeBar").hidden = true;
+  document.getElementById("board").hidden = view !== "reviews";
+  document.getElementById("insta").hidden = view !== "instagram";
+  document.getElementById("about").hidden = view !== "about";
+  document.getElementById("atlasHint").hidden = view !== "world";
+  if (xmas) drawDoors(); else if (mixing) drawMix();
+}
+window.addEventListener("hashchange", route);
+
+/* Reviews and requests. Each person keeps their own entries in posts/<their id>; everyone signed in can read them all. */
+const INSTAGRAM_URL = "";      // Paste the page link here once it exists, e.g. "https://www.instagram.com/yourname"
+const INSTAGRAM_HANDLE = "";   // And the handle, e.g. "@yourname"
+(function instaTab() {
+  const box = document.getElementById("instaBody");
+  if (INSTAGRAM_URL) {
+    box.innerHTML = `<p>Follow along for new drinks, photos from our tastings and what's coming next.</p>
+      <a class="btn" href="${esc(INSTAGRAM_URL)}" target="_blank" rel="noopener">Follow ${esc(INSTAGRAM_HANDLE || "us")} on Instagram</a>`;
+  } else {
+    box.innerHTML = `<p class="soon-big">Coming soon</p><p>Our Instagram page is on its way, with updates, new drinks and photos from our tastings. Check back here for the link.</p>`;
+  }
+})();
+
+(async function board() {
+  const status = document.getElementById("boardStatus");
+  const forms = document.getElementById("boardForms");
+  const rvDrink = document.getElementById("rvDrink");
+  const names = [...new Set([...DRINKS.filter(d => d.items), ...LIBRARY].map(d => d.name))].sort((a, b) => a.localeCompare(b));
+  rvDrink.innerHTML = `<option value="">Choose a drink</option>` + names.map(n => `<option>${esc(n)}</option>`).join("");
+  const lists = { review: document.getElementById("reviewList"), request: document.getElementById("requestList") };
+  const empty = (msg) => { lists.review.innerHTML = `<p class="none">${msg}</p>`; lists.request.innerHTML = `<p class="none">${msg}</p>`; };
+  if (!window.claude || !window.claude.use) {
+    forms.hidden = true; empty("Reviews and requests show on the website link.");
+    status.textContent = "This saved copy can't load reviews. Open the website link to read and post them.";
+    return;
+  }
+  empty("Loading…");
+  const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+  if (!db || !user) {
+    forms.hidden = true; empty("Sign in to Claude to see reviews and requests.");
+    return;
+  }
+  const me = await user.id();
+  const owner = await user.isOwner();
+  const canWrite = await user.can("data.write");
+  if (!me || canWrite === false) {
+    forms.hidden = true;
+    status.textContent = INSTAGRAM_URL ? "You can read everything here. To post, ask us for an invite or message us on Instagram." : "You can read everything here. To post a review or request, ask us for an invite.";
+  }
+  let docs = {};
+  let names2 = {};
+  let busy = Promise.resolve();
+  const timer = setTimeout(() => { status.textContent = "Reviews are taking a while to load. They'll appear when the connection catches up."; }, 10000);
+
+  function stars(n) { return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
+  function when(t) { try { return new Date(t).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" }); } catch (e) { return ""; } }
+  async function render() {
+    const all = [];
+    Object.entries(docs).forEach(([uid, body]) => (Array.isArray(body.entries) ? body.entries : []).forEach(e => all.push({ ...e, uid })));
+    all.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+    const ids = [...new Set(all.map(e => e.uid))];
+    try { names2 = await user.profiles(ids); } catch (e) {}
+    const who = uid => (names2[uid] && names2[uid].name) || (uid === me ? "You" : "Someone");
+    ["review", "request"].forEach(kind => {
+      const items = all.filter(e => e.kind === kind);
+      const el = lists[kind];
+      el.innerHTML = "";
+      if (!items.length) { el.innerHTML = `<p class="none">${kind === "review" ? "No reviews yet. Be the first!" : "No requests yet."}</p>`; return; }
+      items.forEach(e => {
+        const card = document.createElement("article");
+        card.className = "entry";
+        const head = document.createElement("div"); head.className = "entry-head";
+        const t = document.createElement("strong"); t.textContent = e.drink || "";
+        head.appendChild(t);
+        if (kind === "review") { const s = document.createElement("span"); s.className = "stars-show"; s.textContent = stars(Math.max(1, Math.min(5, Number(e.stars) || 0))); s.setAttribute("aria-label", (e.stars || 0) + " out of 5 stars"); head.appendChild(s); }
+        if (kind === "request" && e.status === "added") { const b = document.createElement("span"); b.className = "badge"; b.textContent = "Added to the site"; head.appendChild(b); }
+        card.appendChild(head);
+        if (kind === "request" && (e.where || e.type)) { const m = document.createElement("p"); m.className = "meta"; m.textContent = [e.where, e.type && e.type !== "either" ? e.type : ""].filter(Boolean).join(" · "); card.appendChild(m); }
+        if (e.text) { const p = document.createElement("p"); p.textContent = e.text; card.appendChild(p); }
+        const foot = document.createElement("p"); foot.className = "meta"; foot.textContent = `${who(e.uid)} · ${when(e.at)}`; card.appendChild(foot);
+        const tools = document.createElement("div"); tools.className = "entry-tools";
+        if (owner && kind === "request" && e.status !== "added") tools.appendChild(btn("Mark as added", () => change(e.uid, e.id, x => ({ ...x, status: "added" }))));
+        if (owner || e.uid === me) tools.appendChild(btn("Remove", () => change(e.uid, e.id, () => null)));
+        if (tools.childNodes.length) card.appendChild(tools);
+        el.appendChild(card);
+      });
+    });
+  }
+  function btn(label, fn) { const b = document.createElement("button"); b.type = "button"; b.className = "chip small-btn"; b.textContent = label; b.addEventListener("click", fn); return b; }
+  function change(uid, id, fn) {
+    busy = busy.then(async () => {
+      const body = docs[uid] || { entries: [] };
+      const entries = (body.entries || []).map(x => x.id === id ? fn(x) : x).filter(Boolean);
+      try { await db.doc("posts/" + uid).set({ entries }); }
+      catch (err) { status.textContent = "That change didn't save. Please try again."; }
+    });
+  }
+  function add(entry) {
+    busy = busy.then(async () => {
+      const mine = (docs[me] && docs[me].entries) || [];
+      if (mine.length >= 60) { status.textContent = "You've posted the most we can hold. Remove an old post to add a new one."; return; }
+      const entries = [...mine, { ...entry, id: Math.random().toString(36).slice(2, 10), at: new Date().toISOString() }];
+      try { await db.doc("posts/" + me).set({ entries }); status.textContent = entry.kind === "review" ? "Thanks! Your review is up." : "Thanks! We've got your request."; }
+      catch (err) {
+        forms.hidden = true;
+        status.textContent = err && err.code === "quota_exceeded" ? "The board is full right now. Please try again later." : "Posting isn't open for you yet. Ask us for an invite to post.";
+      }
+    });
+    return busy;
+  }
+  db.collection("posts").onSnapshot(snap => {
+    if (!snap.metadata.fromCache) clearTimeout(timer);
+    docs = {};
+    snap.docs.forEach(d => { if (d.exists) docs[d.id] = d.data(); });
+    render();
+  }, () => { clearTimeout(timer); empty("Reviews couldn't load. Try again later."); });
+
+  document.getElementById("reviewForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const f = e.target;
+    const drink = rvDrink.value;
+    const starsVal = Number((f.querySelector('input[name="rvStars"]:checked') || {}).value || 0);
+    if (!drink || !starsVal) { status.textContent = "Pick a drink and a star rating first."; return; }
+    await add({ kind: "review", drink, stars: starsVal, text: document.getElementById("rvText").value.trim().slice(0, 500) });
+    f.reset();
+  });
+  document.getElementById("requestForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const f = e.target;
+    const drink = document.getElementById("rqDrink").value.trim().slice(0, 80);
+    if (!drink) { status.textContent = "Tell us the name of the drink first."; return; }
+    await add({ kind: "request", drink, where: document.getElementById("rqWhere").value.trim().slice(0, 60),
+      type: (f.querySelector('input[name="rqType"]:checked') || {}).value || "either", text: document.getElementById("rqText").value.trim().slice(0, 500), status: "new" });
+    f.reset();
+  });
+})();
+
+
+/* "What can I make?": every recipe line is matched to one tick box. Garnishes, ice and water never count. */
+const OPTIONAL_RE = /optional|pinch of|a few blueberries|^blackberries$|chopped|celery stick|twist or olive|(^|\s)ice$|rim$|^crushed (candy|meringue)|cookie|biscuit|grated chocolate|spray whipped|\bslices?\b|\bwedge\b|sprig|maraschino|cinnamon|pine nuts|peel|desiccated|^\d+ml water$|hot water/i;
+const MIX_RULES = [
+  ["Alcohol", "Lager", /lager/i], ["Fruit and herbs", "Feijoa", /feijoa/i], ["Fridge and pantry", "Lime cordial", /lime cordial/i], ["Alcohol", "Plum schnapps", /plum schnapps/i], ["Alcohol", "Bison grass vodka", /bison grass/i],
+  ["Alcohol", "Aquavit", /aquavit|akevitt/i], ["Alcohol", "Scotch whisky", /\bscotch\b/i], ["Alcohol", "Irish whiskey", /irish whiskey/i], ["Alcohol", "Drambuie", /drambuie/i],
+  ["Juice and fizzy", "Soda water", /sparkling water/i], ["Fridge and pantry", "Blackcurrant cordial", /blackcurrant/i], ["Fridge and pantry", "Sugar", /\d+(g| tsp) sugar$/i],
+  ["Fridge and pantry", "Oats", /\boats\b/i], ["Fruit and herbs", "Mixed summer fruit", /mixed fruit/i],
+  ["Alcohol", "Campari", /campari/i], ["Alcohol", "Amaretto", /amaretto/i], ["Alcohol", "Peach schnapps", /peach schnapps/i],
+  ["Alcohol", "Green crème de menthe", /menthe/i], ["Alcohol", "White crème de cacao", /cacao/i], ["Alcohol", "Blackberry liqueur", /blackberry liqueur/i],
+  ["Alcohol", "Blue curaçao", /cura[cç]ao/i], ["Alcohol", "Red wine", /red wine/i], ["Alcohol", "Brandy or cognac", /(?<!cherry )brandy|cognac/i],
+  ["Juice and fizzy", "Tomato juice", /tomato/i], ["Juice and fizzy", "Watermelon juice", /watermelon/i], ["Juice and fizzy", "Cola", /\bcola\b/i],
+  ["Juice and fizzy", "Tonic water", /tonic/i], ["Juice and fizzy", "Coconut water", /coconut water/i],
+  ["Fridge and pantry", "Worcestershire sauce", /worcestershire/i], ["Fridge and pantry", "Hot sauce", /hot sauce/i], ["Fridge and pantry", "Orgeat (almond) syrup", /orgeat/i],
+  ["Fridge and pantry", "Peach puree", /peach puree/i], ["Fridge and pantry", "Rosemary syrup", /rosemary syrup/i], ["Fridge and pantry", "Matcha powder", /matcha/i],
+  ["Fruit and herbs", "Cucumber", /cucumber rounds/i], ["Fruit and herbs", "Raspberries", /raspberr/i], ["Fruit and herbs", "Banana", /banana/i],
+  ["Fruit and herbs", "Jalapeño", /jalape/i], ["Fruit and herbs", "Blueberries", /blueberries/i],
+  ["Alcohol", "Crème de cassis", /cassis/i], ["Alcohol", "Pisco", /pisco/i], ["Alcohol", "Soju", /soju/i], ["Alcohol", "Rakı", /rakı|raki/i],
+  ["Alcohol", "Arak", /\barak\b/i], ["Alcohol", "Aguardiente", /aguardiente/i], ["Alcohol", "Whiskey (rye or bourbon)", /whiskey|bourbon/i],
+  ["Alcohol", "Dry vermouth", /dry vermouth/i], ["Alcohol", "Sweet vermouth", /vermouth/i], ["Alcohol", "Angostura bitters", /angostura/i], ["Alcohol", "Dark rum", /dark rum/i],
+  ["Juice and fizzy", "Grapefruit soda", /grapefruit soda/i], ["Juice and fizzy", "White grape juice", /white grape/i], ["Juice and fizzy", "Peach nectar", /peach nectar/i], ["Juice and fizzy", "Blueberry juice", /blueberry juice/i],
+  ["Fridge and pantry", "Sweetened condensed milk", /condensed milk/i], ["Fridge and pantry", "Plain yoghurt", /yoghurt/i], ["Fridge and pantry", "Yakult", /yakult/i],
+  ["Fridge and pantry", "Thai tea or black tea", /thai tea/i], ["Fridge and pantry", "Sour cherry syrup", /sour cherry/i], ["Fridge and pantry", "Elderflower cordial", /elderflower/i],
+  ["Fruit and herbs", "Calamansi", /calamansi/i],
+  ["Alcohol", "White chocolate liqueur", /white chocolate liqueur/i], ["Alcohol", "Chocolate liqueur", /chocolate liqueur/i],
+  ["Alcohol", "Coffee liqueur", /coffee liqueur/i], ["Alcohol", "Peach liqueur", /peach liqueur/i], ["Alcohol", "Irish cream", /irish cream/i],
+  ["Alcohol", "Butterscotch schnapps", /butterscotch/i], ["Alcohol", "Cherry brandy", /cherry brandy/i], ["Alcohol", "Cherry rum", /cherry rum/i],
+  ["Alcohol", "Vanilla rum", /vanilla rum/i], ["Alcohol", "Coconut rum or Malibu", /coconut rum|malibu/i], ["Alcohol", "Spiced rum", /spiced rum/i],
+  ["Alcohol", "White rum", /white rum/i], ["Alcohol", "Vanilla vodka", /vanilla vodka/i], ["Alcohol", "Citrus vodka", /citrus vodka/i],
+  ["Alcohol", "Vodka", /\bvodka/i], ["Alcohol", "Gin", /\bgin\b/i], ["Alcohol", "Tequila", /tequila/i], ["Alcohol", "Cachaça", /cacha/i],
+  ["Alcohol", "Ouzo", /ouzo/i], ["Alcohol", "Aperol", /aperol/i], ["Alcohol", "Apple sours", /apple sours/i],
+  ["Alcohol", "Triple sec or Cointreau", /triple sec|cointreau/i], ["Alcohol", "Prosecco", /prosecco/i], ["Alcohol", "White wine", /white wine/i],
+  ["Juice and fizzy", "Non-alcoholic sparkling wine", /non-alcoholic sparkling/i], ["Juice and fizzy", "Sparkling grape juice", /sparkling grape/i],
+  ["Juice and fizzy", "Cranberry juice", /cranberry juice/i], ["Juice and fizzy", "Apple juice", /\bapple juice/i], ["Juice and fizzy", "Orange juice", /orange juice/i],
+  ["Juice and fizzy", "Pineapple juice", /pineapple juice/i], ["Juice and fizzy", "Grapefruit juice", /grapefruit/i],
+  ["Juice and fizzy", "Pomegranate juice", /pomegranate juice/i], ["Juice and fizzy", "Cherry juice", /cherry juice/i], ["Juice and fizzy", "Lulo juice", /lulo/i],
+  ["Juice and fizzy", "Lemonade", /lemonade/i], ["Juice and fizzy", "Ginger beer", /ginger beer/i], ["Juice and fizzy", "Ginger ale", /ginger ale/i],
+  ["Juice and fizzy", "L&P", /l&p/i], ["Juice and fizzy", "Soda water", /\bsoda\b/i],
+  ["Fridge and pantry", "Non-alcoholic limoncello", /limoncello/i], ["Fridge and pantry", "Hot chocolate", /hot chocolate/i],
+  ["Fridge and pantry", "Coconut cream", /coconut cream/i], ["Fridge and pantry", "Vanilla ice cream", /ice cream/i], ["Fridge and pantry", "Milk", /\bmilk\b/i],
+  ["Fridge and pantry", "Cream", /\bcream\b/i], ["Fridge and pantry", "White chocolate syrup", /white chocolate syrup/i],
+  ["Fridge and pantry", "Chocolate syrup", /chocolate syrup/i], ["Fridge and pantry", "Candy cane syrup", /candy cane syrup/i],
+  ["Fridge and pantry", "Caramel syrup", /caramel syrup/i], ["Fridge and pantry", "Vanilla syrup", /vanilla syrup/i],
+  ["Fridge and pantry", "Gingerbread syrup", /gingerbread syrup/i], ["Fridge and pantry", "Ginger syrup", /ginger syrup/i],
+  ["Fridge and pantry", "Coconut syrup", /coconut syrup/i], ["Fridge and pantry", "Lavender syrup", /lavender/i],
+  ["Fridge and pantry", "Lingonberry syrup", /lingonberry/i], ["Fridge and pantry", "Pomegranate syrup", /pomegranate syrup/i],
+  ["Fridge and pantry", "Jallab syrup", /jallab/i], ["Fridge and pantry", "Sugar syrup", /sugar syrup/i], ["Fridge and pantry", "Honey", /honey/i],
+  ["Fridge and pantry", "Agave syrup", /agave/i], ["Fridge and pantry", "Grenadine", /grenadine/i], ["Fridge and pantry", "Rose water", /rose water/i],
+  ["Fridge and pantry", "Vanilla essence", /vanilla essence/i], ["Fridge and pantry", "Mango puree", /mango/i],
+  ["Fridge and pantry", "Strawberry puree", /strawberry puree/i], ["Fridge and pantry", "Yuzu marmalade", /yuzu marmalade/i],
+  ["Fridge and pantry", "Coffee or espresso", /espresso|coffee/i], ["Fridge and pantry", "Black tea", /black tea/i],
+  ["Fridge and pantry", "Mint tea", /mint tea/i], ["Fridge and pantry", "Hibiscus tea", /sorrel|hibiscus|karkadeh/i],
+  ["Fridge and pantry", "Chicha morada", /chicha morada/i],
+  ["Fruit and herbs", "Lime", /\blimes?\b/i], ["Fruit and herbs", "Lemon", /lemon juice/i], ["Fruit and herbs", "Yuzu", /yuzu juice/i],
+  ["Fruit and herbs", "Passionfruit", /passionfruit/i], ["Fruit and herbs", "Strawberries", /strawberr/i], ["Fruit and herbs", "Mint", /mint leaves/i],
+  ["Fruit and herbs", "Basil", /basil/i], ["Fruit and herbs", "Chilli", /chilli/i], ["Fruit and herbs", "Fresh ginger", /grated ginger/i],
+];
+const keyOf = line => OPTIONAL_RE.test(line) ? null : (MIX_RULES.find(r => r[2].test(line)) || [])[1] || null;
+const MIX = [...DRINKS.filter(d => d.items), ...LIBRARY].sort((a, b) => a.name.localeCompare(b.name));
+MIX.forEach(d => { d.needs = [...new Set(d.items.split("|").map(i => keyOf(i.trim())).filter(Boolean))]; });
+const used = new Set(MIX.flatMap(d => d.needs));
+const SHELF = ["Alcohol", "Juice and fizzy", "Fridge and pantry", "Fruit and herbs"].map(g => [g, [...new Set(MIX_RULES.filter(r => r[0] === g && used.has(r[1])).map(r => r[1]))].sort()]);
+const EXAMPLE = ["Vodka", "Gin", "Vanilla rum", "Cherry rum", "Coffee liqueur", "Chocolate liqueur", "Apple sours", "Aperol", "Sugar syrup", "Lemonade", "Soda water", "Lime", "Lemon", "Mint", "Milk", "Cranberry juice", "Orange juice", "Ginger beer"];
+let savedShelf = null;
+try { savedShelf = JSON.parse(store.get("my-shelf")); } catch (e) {}
+const have = new Set(Array.isArray(savedShelf) ? savedShelf : EXAMPLE);
+let shelfTouched = Array.isArray(savedShelf);
+let mixSec = "all", mixType = "all";
+const groupsEl = document.getElementById("mixGroups");
+/* The everyday things most people have show first; the rest sit behind "Show all". */
+const COMMON = new Set(["Vodka", "Gin", "White rum", "Dark rum", "Tequila", "Prosecco", "Aperol", "Coffee liqueur", "Irish cream", "Coconut rum or Malibu",
+  "Lemonade", "Soda water", "Ginger beer", "Tonic water", "Cola", "Cranberry juice", "Orange juice", "Pineapple juice", "Apple juice",
+  "Milk", "Cream", "Sugar syrup", "Honey", "Coffee or espresso", "Lime", "Lemon", "Mint", "Strawberries"]);
+groupsEl.innerHTML = SHELF.map(([title, list], gi) => `<fieldset class="group"><legend>${title}</legend><div class="ticks">${
+  list.map((item, i) => `<label class="tick${COMMON.has(item) || have.has(item) ? "" : " extra"}"><input type="checkbox" id="t-${gi}-${i}" value="${esc(item)}"${have.has(item) ? " checked" : ""}><span>${esc(item)}</span></label>`).join("")
+}</div></fieldset>`).join("") + `<button class="chip more-btn" id="moreTicks" type="button" aria-expanded="false">Show all ${SHELF.reduce((n, g) => n + g[1].length, 0)} ingredients</button>`;
+document.getElementById("moreTicks").addEventListener("click", e => {
+  const open = groupsEl.classList.toggle("show-all");
+  e.target.setAttribute("aria-expanded", String(open));
+  e.target.textContent = open ? "Show fewer" : `Show all ${SHELF.reduce((n, g) => n + g[1].length, 0)} ingredients`;
+});
+function mixTile(d, i, missing) {
+  return `<button class="tile" type="button" data-i="${i}">
+    <span class="ttype">${d.country === "Home" ? "Anywhere" : esc(d.country)} · ${d.type === "cocktail" ? "Cocktail" : "Mocktail"}</span><span class="ttitle">${esc(d.name)}</span><span>${esc(d.flavour)}</span>
+    ${missing ? `<span class="need">Just need: ${esc(missing)}</span>` : ""}</button>`;
+}
+let nearOpen = false;
+document.getElementById("near").addEventListener("click", e => { if (e.target.id === "nearMore") { nearOpen = !nearOpen; drawMix(); } });
+function drawMix() {
+  const ready = [], near = [];
+  let rest = 0;
+  MIX.forEach((d, i) => {
+    if (mixType !== "all" && d.type !== mixType) return;
+    const missing = d.needs.filter(x => !have.has(x));
+    if (!missing.length) ready.push(mixTile(d, i));
+    else if (missing.length === 1) near.push(mixTile(d, i, missing[0]));
+    else rest++;
+  });
+  const w = n => n === 1 ? "drink" : "drinks";
+  document.getElementById("readyTitle").textContent = `You can make ${ready.length} ${w(ready.length)}`;
+  document.getElementById("ready").innerHTML = ready.join("") || `<p class="none">Nothing yet. Tick a few more things and drinks will appear here.</p>`;
+  document.getElementById("nearTitle").textContent = `One thing away from ${near.length} more`;
+  const NEAR_MAX = 12;
+  document.getElementById("near").innerHTML = (nearOpen ? near : near.slice(0, NEAR_MAX)).join("") +
+    (near.length > NEAR_MAX ? `<button class="chip more-btn near-more" id="nearMore" type="button">${nearOpen ? "Show fewer" : `Show all ${near.length}`}</button>` : "");
+  document.getElementById("mixMore").textContent = rest ? `${rest} more ${w(rest)} need two or more extra things.` : "";
+  document.getElementById("shelfNote").textContent = shelfTouched ? `${have.size} ticked` : "Example ticks shown";
+}
+groupsEl.addEventListener("change", e => {
+  if (e.target.checked) have.add(e.target.value); else have.delete(e.target.value);
+  shelfTouched = true; store.set("my-shelf", JSON.stringify([...have])); drawMix();
+});
+document.getElementById("clearShelf").addEventListener("click", () => {
+  have.clear(); groupsEl.querySelectorAll("input").forEach(i => { i.checked = false; });
+  shelfTouched = true; store.set("my-shelf", "[]"); drawMix();
+});
+document.querySelectorAll("[data-sec],[data-type]").forEach(b => b.addEventListener("click", () => {
+  const key = b.dataset.sec ? "sec" : "type";
+  if (key === "sec") mixSec = b.dataset.sec; else mixType = b.dataset.type;
+  document.querySelectorAll(`[data-${key}]`).forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  drawMix();
+}));
+document.getElementById("mixResults").addEventListener("click", e => {
+  const t = e.target.closest(".tile");
+  if (!t) return;
+  const d = MIX[Number(t.dataset.i)];
+  document.getElementById("dlgTitle").textContent = d.name;
+  document.getElementById("dlgCards").innerHTML = postcardHtml(d);
+  dlg.showModal();
+});
+
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+
+/* Drink of the week: changes every Monday (NZ time), the same for everyone. */
+(function featured() {
+  const p = {};
+  new Intl.DateTimeFormat("en-NZ", { timeZone: "Pacific/Auckland", year: "numeric", month: "numeric", day: "numeric" })
+    .formatToParts(new Date()).forEach(x => { p[x.type] = Number(x.value); });
+  const today = Date.UTC(p.year, p.month - 1, p.day);
+  const week = Math.floor((today - Date.UTC(2026, 0, 5)) / (7 * 86400000));
+  const pool = DRINKS.filter(d => d.items && !d.group);
+  let seed = 8080;
+  const order = pool.map(d => d).sort(() => 0);
+  for (let i = order.length - 1; i > 0; i--) { seed = seed * 48271 % 2147483647; const j = seed % (i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+  const d = order[((week % order.length) + order.length) % order.length];
+  document.getElementById("featSub").textContent = `This week we're off to ${d.country}. Tap the postcard to flip it.`;
+  document.getElementById("featCard").innerHTML = postcardHtml(d);
+  /* Christmas decorations only go up from 1 November to 6 January. */
+  const festive = p.month >= 11 || (p.month === 1 && p.day <= 6);
+  document.body.classList.toggle("festive", festive);
+})();
+const ABOUT_US = "Hi, I'm Amber-Rose.\n\nThis all started as a Christmas project with my brother and sister-in-law: 25 drinks to count down to the big day. I kept going, and somewhere along the way it turned into a trip around the world, one glass at a time.\n\nNow it's here for anyone who wants it. Pick a drink, see exactly what you need, and make it at home, with or without the alcohol. Cheers!";
+if (ABOUT_US) { document.getElementById("aboutUs").hidden = false; document.getElementById("aboutUsText").textContent = ABOUT_US; }
+(function () {
+  const img = document.getElementById("aboutPhoto"), box = document.getElementById("aboutUs");
+  const ok = () => box.classList.add("has-photo");
+  if (img.complete && img.naturalWidth) ok(); else img.addEventListener("load", ok);
+})();
+document.getElementById("aboutGoal").textContent = `So far I've collected ${Math.min(SIPS, 80)} of my 80 sips from ${countries.length} countries. I'm adding more as I go, so check back to see where I travel next.`;
+route();
+markPins();
+</script>
+
+</body></html>
